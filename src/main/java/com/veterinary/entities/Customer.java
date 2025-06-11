@@ -21,7 +21,7 @@ public class Customer extends BaseEntity{
     private String phone;
 
     @Column(unique = true,nullable = false)
-    private String mail;
+    private String email;
 
     private String city;
 

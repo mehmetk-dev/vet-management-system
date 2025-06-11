@@ -1,0 +1,64 @@
+package com.veterinary.api;
+
+import com.veterinary.business.CustomerService;
+import com.veterinary.core.config.mapStruct.CustomerMapper;
+import com.veterinary.core.result.ResultData;
+import com.veterinary.dto.CursorResponse;
+import com.veterinary.dto.request.CustomerRequest;
+import com.veterinary.dto.response.CustomerResponse;
+import com.veterinary.entities.Customer;
+import com.veterinary.utilies.ResultHelper;
+import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+@RestController
+@RequestMapping("/v1/customers")
+public class CustomerController {
+
+    private final CustomerService customerService;
+    private final CustomerMapper customerMapper;
+
+    public CustomerController(CustomerService customerService, CustomerMapper customerMapper) {
+        this.customerService = customerService;
+        this.customerMapper = customerMapper;
+    }
+
+    @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<CustomerResponse> save(@Valid @RequestBody CustomerRequest customerRequest){
+        Customer customer = CustomerMapper.INSTANCE.toEntity(customerRequest);
+        Customer savedCustomer = customerService.save(customer);
+        return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.INSTANCE.toResponse(savedCustomer));
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<CustomerResponse> getById(@PathVariable("id") long id){
+        return ResponseEntity.status(HttpStatus.OK).body(customerMapper.toResponse(this.customerService.getById(id)));
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CustomerResponse> update(@PathVariable("id")long id, @RequestBody CustomerRequest customerRequest){
+        CustomerResponse response = customerService.update(id, customerRequest);
+        return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> delete(@PathVariable Long id) {
+        customerService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping
+    public ResultData<CursorResponse<CustomerResponse>> getAnimals(
+            @RequestParam(name = "page",defaultValue = "0") int page,
+            @RequestParam(name = "pageSize",defaultValue = "10") int pageSize
+    ){
+        Page<Customer> customers = customerService.getAllCustomer(page,pageSize);
+        Page<CustomerResponse> customerResponses = customers
+                .map(customerMapper::toResponse);
+        return ResultHelper.cursor(customerResponses); //stackoverde kaldık
+    }
+}

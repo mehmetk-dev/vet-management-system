@@ -22,7 +22,7 @@ public class Doctor extends BaseEntity{
 
     @Column(unique = true,nullable = false)
     @Email
-    private String mail;
+    private String email;
 
     private String address;
 
