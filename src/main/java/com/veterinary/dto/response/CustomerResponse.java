@@ -1,13 +1,11 @@
 package com.veterinary.dto.response;
 
-import com.veterinary.entities.Animal;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class CustomerResponse {
@@ -24,5 +22,5 @@ public class CustomerResponse {
 
     private String address;
 
-    private List<Animal> animals;
+    private List<String> animalNames;
 }

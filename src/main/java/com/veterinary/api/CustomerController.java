@@ -52,13 +52,13 @@ public class CustomerController {
     }
 
     @GetMapping
-    public ResultData<CursorResponse<CustomerResponse>> getAnimals(
+    public ResultData<CursorResponse<CustomerResponse>> getCustomers(
             @RequestParam(name = "page",defaultValue = "0") int page,
             @RequestParam(name = "pageSize",defaultValue = "10") int pageSize
     ){
         Page<Customer> customers = customerService.getAllCustomer(page,pageSize);
         Page<CustomerResponse> customerResponses = customers
                 .map(customerMapper::toResponse);
-        return ResultHelper.cursor(customerResponses); //stackoverde kaldık
+        return ResultHelper.cursor(customerResponses);
     }
 }
