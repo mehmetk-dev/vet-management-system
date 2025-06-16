@@ -6,7 +6,6 @@ import com.veterinary.core.config.mapStruct.CustomerMapper;
 import com.veterinary.dao.CustomerRepo;
 import com.veterinary.dto.request.CustomerRequest;
 import com.veterinary.dto.response.CustomerResponse;
-import com.veterinary.entities.Animal;
 import com.veterinary.entities.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
