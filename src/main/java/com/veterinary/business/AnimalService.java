@@ -1,5 +1,6 @@
 package com.veterinary.business;
 
+import com.veterinary.core.config.exception.ExceptionMessages;
 import com.veterinary.core.config.exception.NotFoundException;
 import com.veterinary.core.config.mapStruct.AnimalMapper;
 import com.veterinary.dao.AnimalRepo;
@@ -11,15 +12,19 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class AnimalService {
 
     private final AnimalRepo animalRepo;
     private final AnimalMapper animalMapper;
+    private final CustomerService customerService;
 
-    public AnimalService(AnimalRepo animalRepo, AnimalMapper animalMapper) {
+    public AnimalService(AnimalRepo animalRepo, AnimalMapper animalMapper, CustomerService customerService) {
         this.animalRepo = animalRepo;
         this.animalMapper = animalMapper;
+        this.customerService = customerService;
     }
 
     public AnimalResponse save(AnimalRequest animalRequest) {
@@ -29,7 +34,8 @@ public class AnimalService {
     }
 
     public Animal getById(long id) {
-        return this.animalRepo.findById(id).orElseThrow(() -> new NotFoundException("Kayıt Bulunamadı"));
+        return this.animalRepo.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format(ExceptionMessages.ANIMAL_NOT_FOUND,id)));
     }
 
 
@@ -51,4 +57,13 @@ public class AnimalService {
         Pageable pageable = PageRequest.of(page,pageSize);
         return animalRepo.findAll(pageable);
     }
+
+    public List<AnimalResponse> findAllByName(String name){
+        List<Animal> animalList = this.animalRepo.findByNameContainingIgnoreCase(name);
+
+        return animalList.stream().map(
+                animalMapper::toResponse).toList();
+    }
+
+
 }

@@ -14,11 +14,11 @@ tarih ve saat ile kontrol yapılmalı. Kayıtlarda çakışma olmadığı durumd
 
 API Temel Özellikleri
 Hayvanların ve Sahiplerinin (customer) Yönetimi
-* Hayvanları kaydetme, bilgilerini güncelleme, görüntüleme ve silme
-* Hayvan sahiplerini kaydetme, bilgilerini güncelleme, görüntüleme ve silme
-* Hayvan sahipleri isme göre filtrelenecek şekilde end point oluşturmak.
-* Hayvanlar isme göre filtrelenecek şekilde end point oluşturmak.
-* Hayvan sahibinin sistemde kayıtlı tüm hayvanlarını görüntülemek için API end point'ini oluşturmak.
+✅* Hayvanları kaydetme, bilgilerini güncelleme, görüntüleme ve silme
+✅* Hayvan sahiplerini kaydetme, bilgilerini güncelleme, görüntüleme ve silme
+✅* Hayvan sahipleri isme göre filtrelenecek şekilde end point oluşturmak.
+✅* Hayvanlar isme göre filtrelenecek şekilde end point oluşturmak.
+✅* Hayvan sahibinin sistemde kayıtlı tüm hayvanlarını görüntülemek için API end point'ini oluşturmak.
 * Hayvan sahibine göre hayvanlara filtreleme yapmalısın.
 
 Uygulanan Aşıların Yönetimi

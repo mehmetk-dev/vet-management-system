@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/animals")
 public class AnimalController {
@@ -59,5 +61,15 @@ public class AnimalController {
         Page<AnimalResponse> animalResponsePage = animals
                 .map(animalMapper::toResponse);
         return ResultHelper.cursor(animalResponsePage);
+    }
+
+    @GetMapping(params = "name")
+    public ResponseEntity<List<AnimalResponse>> getAllByName(@RequestParam(name = "name")String name){
+        return ResponseEntity.ok(this.animalService.findAllByName(name));
+    }
+
+    @GetMapping(params = "customerName")
+    public ResponseEntity<List<AnimalResponse>> getAllByCustomerName(@RequestParam(name = "customerName")String name){
+        return ResponseEntity.ok(this.animalService.findAllByCustomerName(name));
     }
 }

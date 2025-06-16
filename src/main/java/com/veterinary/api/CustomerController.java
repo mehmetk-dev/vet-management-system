@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/v1/customers")
 public class CustomerController {
@@ -29,9 +31,9 @@ public class CustomerController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<CustomerResponse> save(@Valid @RequestBody CustomerRequest customerRequest){
-        Customer customer = CustomerMapper.INSTANCE.toEntity(customerRequest);
+        Customer customer = customerMapper.toEntity(customerRequest);
         Customer savedCustomer = customerService.save(customer);
-        return ResponseEntity.status(HttpStatus.CREATED).body(CustomerMapper.INSTANCE.toResponse(savedCustomer));
+        return ResponseEntity.status(HttpStatus.CREATED).body(customerMapper.toResponse(savedCustomer));
     }
 
     @GetMapping("/{id}")
@@ -60,5 +62,16 @@ public class CustomerController {
         Page<CustomerResponse> customerResponses = customers
                 .map(customerMapper::toResponse);
         return ResultHelper.cursor(customerResponses);
+    }
+
+    @GetMapping(params = "name")
+    public ResponseEntity<List<CustomerResponse>> getByName(@RequestParam(name = "name") String name){
+        return ResponseEntity.ok(this.customerService.getAllByName(name));
+    }
+
+
+    @GetMapping("/get-animals/{id}")
+    public ResultData<List<String>> getAnimalsByCustomer(@PathVariable("id")long id){
+        return this.customerService.getAnimalsByCustomerId(id);
     }
 }

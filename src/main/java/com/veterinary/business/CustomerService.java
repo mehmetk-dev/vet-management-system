@@ -1,8 +1,10 @@
 package com.veterinary.business;
 
 import com.veterinary.core.config.exception.EntityAlreadyExistsException;
+import com.veterinary.core.config.exception.ExceptionMessages;
 import com.veterinary.core.config.exception.NotFoundException;
 import com.veterinary.core.config.mapStruct.CustomerMapper;
+import com.veterinary.core.result.ResultData;
 import com.veterinary.dao.CustomerRepo;
 import com.veterinary.dto.request.CustomerRequest;
 import com.veterinary.dto.response.CustomerResponse;
@@ -11,6 +13,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class CustomerService {
@@ -31,7 +36,8 @@ public class CustomerService {
     }
 
     public Customer getById(long id) {
-        return this.customerRepo.findById(id).orElseThrow(() -> new NotFoundException("Kayıt Bulunamadı"));
+        return this.customerRepo.findById(id).orElseThrow(
+                () -> new NotFoundException(String.format(ExceptionMessages.CUSTOMER_NOT_FOUND,id)));
     }
 
 
@@ -51,7 +57,30 @@ public class CustomerService {
     }
 
     public Page<Customer> getAllCustomer(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page,pageSize);
+        Pageable pageable = PageRequest.of(page, pageSize);
         return customerRepo.findAll(pageable);
     }
+
+    public List<CustomerResponse> getAllByName(String name) {
+        List<CustomerResponse> responseList = new ArrayList<>();
+        List<Customer> customerList = this.customerRepo.findByNameContainingIgnoreCase(name);
+        if (!customerList.isEmpty()) {
+            for (Customer customer : customerList) {
+                responseList.add(customerMapper.toResponse(customer));
+            }
+        } else {
+            throw new NotFoundException(ExceptionMessages.NOT_FOUND);
+        }
+        return responseList;
+    }
+
+    public ResultData<List<String>> getAnimalsByCustomerId(long id) {
+        getById(id); //id kontrolü
+        List<String> animalNameList = this.customerRepo.findAnimalsByCustomerId(id);
+        if (animalNameList.isEmpty()) {
+            throw new NotFoundException(String.format(ExceptionMessages.CUSTOMER_ANIMALS_NOT_FOUND,id));
+        }
+        return new ResultData<>(true,id+"'li kullanıcının hayvan listesi","200",animalNameList );
+    }
 }
+
