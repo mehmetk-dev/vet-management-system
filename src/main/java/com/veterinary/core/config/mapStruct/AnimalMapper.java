@@ -6,6 +6,7 @@ import com.veterinary.entities.Animal;
 import com.veterinary.entities.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 @Mapper(componentModel = "spring")
 public interface AnimalMapper {
@@ -27,4 +28,7 @@ public interface AnimalMapper {
         if (customer == null) return null;
         return customer.getId();
     }
+
+    void updateEntityFromRequest(@MappingTarget Animal entity, AnimalRequest request);
+
 }

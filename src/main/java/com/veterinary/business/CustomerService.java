@@ -29,8 +29,12 @@ public class CustomerService {
     }
 
     public Customer save(Customer customer) {
-        if (customerRepo.existsByEmail(customer.getEmail()) || customerRepo.existsByPhone(customer.getPhone())) {
-            throw new EntityAlreadyExistsException("Bu email veya numara zaten kayıtlı!", 409);
+        if (customerRepo.existsByEmail(customer.getEmail())) {
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.EMAIL_EXISTS,customer.getEmail()));
+        }
+
+        if (customerRepo.existsByPhone(customer.getPhone())) {
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.PHONE_EXISTS,customer.getPhone()));
         }
         return this.customerRepo.save(customer);
     }
@@ -74,13 +78,13 @@ public class CustomerService {
         return responseList;
     }
 
-    public ResultData<List<String>> getAnimalsByCustomerId(long id) {
+    public List<String> getAnimalsByCustomerId(long id) {
         getById(id); //id kontrolü
-        List<String> animalNameList = this.customerRepo.findAnimalsByCustomerId(id);
+        List<String> animalNameList = this.customerRepo.findAnimalsNameByCustomerId(id);
         if (animalNameList.isEmpty()) {
             throw new NotFoundException(String.format(ExceptionMessages.CUSTOMER_ANIMALS_NOT_FOUND,id));
         }
-        return new ResultData<>(true,id+"'li kullanıcının hayvan listesi","200",animalNameList );
+        return animalNameList;
     }
 }
 

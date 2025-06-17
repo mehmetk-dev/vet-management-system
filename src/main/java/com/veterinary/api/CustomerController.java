@@ -1,11 +1,13 @@
 package com.veterinary.api;
 
 import com.veterinary.business.CustomerService;
+import com.veterinary.business.VaccineService;
 import com.veterinary.core.config.mapStruct.CustomerMapper;
 import com.veterinary.core.result.ResultData;
 import com.veterinary.dto.CursorResponse;
 import com.veterinary.dto.request.CustomerRequest;
 import com.veterinary.dto.response.CustomerResponse;
+import com.veterinary.dto.response.VaccineResponse;
 import com.veterinary.entities.Customer;
 import com.veterinary.utilies.ResultHelper;
 import jakarta.validation.Valid;
@@ -14,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -22,10 +25,12 @@ public class CustomerController {
 
     private final CustomerService customerService;
     private final CustomerMapper customerMapper;
+    private final VaccineService vaccineService;
 
-    public CustomerController(CustomerService customerService, CustomerMapper customerMapper) {
+    public CustomerController(CustomerService customerService, CustomerMapper customerMapper, VaccineService vaccineService) {
         this.customerService = customerService;
         this.customerMapper = customerMapper;
+        this.vaccineService = vaccineService;
     }
 
     @PostMapping
@@ -70,8 +75,18 @@ public class CustomerController {
     }
 
 
-    @GetMapping("/get-animals/{id}")
+    @GetMapping("/{id}/animals")
     public ResultData<List<String>> getAnimalsByCustomer(@PathVariable("id")long id){
-        return this.customerService.getAnimalsByCustomerId(id);
+        List<String> animalNameList = this.customerService.getAnimalsByCustomerId(id);
+        return new ResultData<>(true,"200",id + " ID'li kullanıcının hayvan listesi",animalNameList);
+    }
+
+    @GetMapping("/{id}/animals/vaccines")
+    public ResponseEntity<List<VaccineResponse>> getVaccinesByCustomerAnimals(
+            @RequestParam(value = "startDate") LocalDate startDate,
+            @RequestParam(value = "endDate") LocalDate endDate,
+            @PathVariable("id") long id)
+    {
+        return ResponseEntity.status(HttpStatus.OK).body(vaccineService.getVaccinesExpiringBetween(startDate,endDate,id));
     }
 }

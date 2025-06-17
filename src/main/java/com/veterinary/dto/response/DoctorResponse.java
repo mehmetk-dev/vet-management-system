@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -25,7 +26,7 @@ public class DoctorResponse {
 
     private String city;
 
-    private List<AvailableDate> availableDates;
+    private List<LocalDate> availableDate;
 
     private List<Appointment> appointments;
 }

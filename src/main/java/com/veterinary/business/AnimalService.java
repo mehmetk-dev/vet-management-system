@@ -3,10 +3,14 @@ package com.veterinary.business;
 import com.veterinary.core.config.exception.ExceptionMessages;
 import com.veterinary.core.config.exception.NotFoundException;
 import com.veterinary.core.config.mapStruct.AnimalMapper;
+import com.veterinary.core.config.mapStruct.CustomerMapper;
 import com.veterinary.dao.AnimalRepo;
+import com.veterinary.dao.CustomerRepo;
 import com.veterinary.dto.request.AnimalRequest;
 import com.veterinary.dto.response.AnimalResponse;
+import com.veterinary.dto.response.CustomerResponse;
 import com.veterinary.entities.Animal;
+import com.veterinary.entities.Customer;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -19,12 +23,14 @@ public class AnimalService {
 
     private final AnimalRepo animalRepo;
     private final AnimalMapper animalMapper;
-    private final CustomerService customerService;
+    private final CustomerRepo customerRepo;
+    private final CustomerMapper customerMapper;
 
-    public AnimalService(AnimalRepo animalRepo, AnimalMapper animalMapper, CustomerService customerService) {
+    public AnimalService(AnimalRepo animalRepo, AnimalMapper animalMapper, CustomerService customerService, CustomerRepo customerRepo, CustomerMapper customerMapper) {
         this.animalRepo = animalRepo;
         this.animalMapper = animalMapper;
-        this.customerService = customerService;
+        this.customerRepo = customerRepo;
+        this.customerMapper = customerMapper;
     }
 
     public AnimalResponse save(AnimalRequest animalRequest) {
@@ -66,4 +72,11 @@ public class AnimalService {
     }
 
 
+    public CustomerResponse findCustomerByAnimalId(long id) {
+        Customer customer = this.animalRepo.findCustomerByAnimalId(id);
+        if (customer == null){
+            throw new NotFoundException(String.format(ExceptionMessages.ANIMAL_NOT_FOUND,id));
+        }
+        return this.customerMapper.toResponse(customer);
+    }
 }

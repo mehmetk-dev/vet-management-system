@@ -5,6 +5,7 @@ import com.veterinary.dto.response.CustomerResponse;
 import com.veterinary.entities.Customer;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
 
 
 @Mapper(componentModel = "spring")
@@ -16,4 +17,6 @@ public interface CustomerMapper {
     CustomerResponse toResponse(Customer customer);
 
     Customer toEntity(CustomerRequest customerRequest);
+
+    void updateEntityFromRequest(@MappingTarget Customer entity, CustomerRequest request);
 }

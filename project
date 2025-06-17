@@ -19,13 +19,13 @@ Hayvanların ve Sahiplerinin (customer) Yönetimi
 ✅* Hayvan sahipleri isme göre filtrelenecek şekilde end point oluşturmak.
 ✅* Hayvanlar isme göre filtrelenecek şekilde end point oluşturmak.
 ✅* Hayvan sahibinin sistemde kayıtlı tüm hayvanlarını görüntülemek için API end point'ini oluşturmak.
-* Hayvan sahibine göre hayvanlara filtreleme yapmalısın.
+✅* Hayvan sahibine göre hayvanlara filtreleme yapmalısın.
 
 Uygulanan Aşıların Yönetimi
-* Hayvanlara uygulanan aşıları kaydetme, bilgilerini güncelleme, görüntüleme ve silme
-* Eğer hastaya ait aynı tip aşının (adı ve kodu aynı olan aşı) aşı koruyuculuk bitiş tarihi
+✅ Hayvanlara uygulanan aşıları kaydetme, bilgilerini güncelleme, görüntüleme ve silme
+✅* Eğer hastaya ait aynı tip aşının (adı ve kodu aynı olan aşı) aşı koruyuculuk bitiş tarihi
 daha gelmemiş ise sisteme yeni aşı girilememelidir. Aşı kodlarından ve aşı bitiş tarihlerinden bunu kontrol edebilirsin.
-* Hayvan id’sine göre belirli bir hayvana ait tüm aşı kayıtlarını listelemek için gerekli API end point'ini oluşturmak.
+✅* Hayvan id’sine göre belirli bir hayvana ait tüm aşı kayıtlarını listelemek için gerekli API end point'ini oluşturmak.
 * Kullanıcının aşı koruyuculuk bitiş tarihi yaklaşan hayvanları listeleyebilmesi için gireceği başlangıç ve bitiş
 tarihlerine göre aşı koruyuculuk bitiş tarihi bu aralıkta olan aşıları hayvan bilgileriyle birlikte listesini geri
 döndüren API end point'ini oluşturmak.
@@ -46,10 +46,10 @@ olmadığını sorgulamak için kullanılacaktır.) Jpa’nın findBy between ku
 point’i oluşturulmalıdır. Jpa’nın findBy between kullanımına bakabilirsin.
 
 Veteriner Doktor Yönetimi
-* Veteriner doktorların kaydedilmesi, bilgilerinin güncellenmesi, görüntülenmesi ve silinmesi
-* Doktorların Müsait Günlerinin Yönetimi
-* Doktorların müsait günlerini ekleme, bilgilerini güncelleme, görüntüleme ve silme
-* Doktorun çalıştığı günler sisteme LocalDate olarak kaydedilecektir. Sadece tarih bilgisi olacaktır. Saat, dakika, saniye bilgisi olmayacaktır.
+✅* Veteriner doktorların kaydedilmesi, bilgilerinin güncellenmesi, görüntülenmesi ve silinmesi
+✅* Doktorların Müsait Günlerinin Yönetimi
+✅* Doktorların müsait günlerini ekleme, bilgilerini güncelleme, görüntüleme ve silme
+✅* Doktorun çalıştığı günler sisteme LocalDate olarak kaydedilecektir. Sadece tarih bilgisi olacaktır. Saat, dakika, saniye bilgisi olmayacaktır.
 
 Projede Dikkat Edilmesi Gereken Hususlar
 Proje başlangıcında UML diyagram oluşturulmalı ve daha sonra readme dosyasına eklenmelidir.

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -12,6 +12,6 @@ import java.time.LocalDateTime;
 public class AvailableDateResponse {
 
     private Long id;
-    private LocalDateTime available;
-    private Long animalId;
+    private LocalDate available;
+    private String doctorName;
 }

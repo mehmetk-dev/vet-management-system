@@ -1,7 +1,10 @@
 package com.veterinary.dao;
 
 import com.veterinary.entities.Animal;
+import com.veterinary.entities.Customer;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -10,4 +13,6 @@ import java.util.List;
 public interface AnimalRepo extends JpaRepository<Animal,Long> {
     List<Animal>findByNameContainingIgnoreCase(String name);
     List<Animal>findByCustomerName(String name);
+    @Query("SELECT a.customer FROM Animal a WHERE a.id = :id")
+    Customer findCustomerByAnimalId(@Param("id") Long id);
 }
