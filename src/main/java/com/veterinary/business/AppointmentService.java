@@ -1,30 +1,70 @@
 package com.veterinary.business;
 
+import com.veterinary.core.config.exception.EntityAlreadyExistsException;
 import com.veterinary.core.config.exception.ExceptionMessages;
 import com.veterinary.core.config.exception.NotFoundException;
 import com.veterinary.core.config.mapStruct.AppointmentMapper;
+import com.veterinary.dao.AnimalRepo;
 import com.veterinary.dao.AppointmentRepo;
+import com.veterinary.dao.AvailableDateRepo;
+import com.veterinary.dao.DoctorRepo;
 import com.veterinary.dto.request.AppointmentRequest;
 import com.veterinary.dto.response.AppointmentResponse;
+import com.veterinary.entities.Animal;
 import com.veterinary.entities.Appointment;
+import com.veterinary.entities.Doctor;
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class AppointmentService {
 
     private final AppointmentRepo appointmentRepo;
     private final AppointmentMapper appointmentMapper;
+    private final DoctorRepo doctorRepo;
+    private final AnimalRepo animalRepo;
+    private final DoctorService doctorService;
+    private final AnimalService animalService;
+    private final AvailableDateRepo availableDateRepo;
 
-    public AppointmentService(AppointmentRepo appointmentRepo, AppointmentMapper appointmentMapper) {
+    public AppointmentService(AppointmentRepo appointmentRepo, AppointmentMapper appointmentMapper, DoctorRepo doctorRepo, AnimalRepo animalRepo, DoctorService doctorService, AnimalService animalService, AvailableDateRepo availableDateRepo) {
         this.appointmentRepo = appointmentRepo;
         this.appointmentMapper = appointmentMapper;
+        this.doctorRepo = doctorRepo;
+        this.animalRepo = animalRepo;
+        this.doctorService = doctorService;
+        this.animalService = animalService;
+        this.availableDateRepo = availableDateRepo;
     }
 
+    @Transactional
     public AppointmentResponse save(AppointmentRequest request){
+
+        Doctor doctor = this.doctorService.getById(request.getDoctorId());
+        Animal animal = this.animalService.getById(request.getAnimalId());
+
+//        boolean isAvailable = doctor.getAvailableDates().stream()
+//                .anyMatch(date -> date.getAvailable().isEqual(request.getAppointmentDate().toLocalDate()));
+
+        boolean isAvailable = availableDateRepo.existsByDoctorIdAndAvailable(
+                request.getDoctorId(), request.getAppointmentDate().toLocalDate());
+        if (!isAvailable){
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.DOCTOR_NOT_AVAILABLE,doctor.getId(),request.getAppointmentDate().toLocalDate()));
+        }
+
+        boolean isHourTaken = appointmentRepo
+                .existsByDoctorIdAndAppointmentDate(doctor.getId(), request.getAppointmentDate());
+
+        if (isHourTaken){
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.DOCTOR_NOT_AVAILABLE_THIS_HOUR,doctor.getId(),request.getAppointmentDate()));
+        }
         Appointment appointment = this.appointmentMapper.toEntity(request);
+
         return appointmentMapper.toResponse(appointmentRepo.save(appointment));
     }
 

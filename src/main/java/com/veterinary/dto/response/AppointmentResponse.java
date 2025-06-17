@@ -13,5 +13,6 @@ public class AppointmentResponse {
 
     private Long id;
     private LocalDateTime available;
-
+    private Long doctorId;
+    private Long animalId;
 }

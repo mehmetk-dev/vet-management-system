@@ -18,6 +18,8 @@ public interface CustomerRepo extends JpaRepository<Customer,Long> {
     @Query("SELECT a.name FROM Animal a WHERE a.customer.id = :id")
     List<String> findAnimalsNameByCustomerId(@Param("id")Long id);
 
-    @Query("SELECT a FROM Animal a WHERE a.customer.id = :id")
+    @Query(value = "SELECT * FROM animals WHERE customer_id = :id", nativeQuery = true)
     List<Animal> findAnimalByCustomerId(@Param("id") Long id);
+
+    
 }

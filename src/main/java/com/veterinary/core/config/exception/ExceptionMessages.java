@@ -15,4 +15,6 @@ public class ExceptionMessages {
     public static final String DATE_CANNOT_BE_IN_PAST = "Hatalı tarih bilgisi girildi.";
     public static final String VACCINE_ALL_READY_EXISTS = "Bu hayvana ait '%s' kodlu aşının geçerliliği %s tarihine kadar devam ediyor.";
     public static final String ANIMAL_VACCINES_NOT_FOUND = "%s ID'li hayvana ait aşı bilgisi bulunamadı.";
+    public static final String DOCTOR_NOT_AVAILABLE = "%s ID'li doktor %s tarihinde çalışmıyor.";
+    public static final String DOCTOR_NOT_AVAILABLE_THIS_HOUR = "%s ID'li doktorun %s saatinde başka bir randevusu mevcut. Başka tarih deneyin.";
 }

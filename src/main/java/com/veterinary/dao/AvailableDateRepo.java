@@ -15,4 +15,6 @@ public interface AvailableDateRepo extends JpaRepository<AvailableDate,Long> {
 
     @Query("SELECT a.available FROM AvailableDate a WHERE a.doctor.id = :id")
     List<LocalDate> findAvailableDatesByDoctorId(@Param("id") Long doctorId);
+
+
 }

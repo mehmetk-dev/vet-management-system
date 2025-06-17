@@ -81,7 +81,7 @@ public class CustomerController {
         return new ResultData<>(true,"200",id + " ID'li kullanıcının hayvan listesi",animalNameList);
     }
 
-    @GetMapping("/{id}/animals/vaccines")
+    @GetMapping("/{id}/animals/vaccines/filter")
     public ResponseEntity<List<VaccineResponse>> getVaccinesByCustomerAnimals(
             @RequestParam(value = "startDate") LocalDate startDate,
             @RequestParam(value = "endDate") LocalDate endDate,
