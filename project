@@ -31,19 +31,18 @@ tarihlerine göre aşı koruyuculuk bitiş tarihi bu aralıkta olan aşıları h
 döndüren API end point'ini oluşturmak.
 
 Randevu Yönetimi
-* Hayvanların aşı ve muayene randevularının oluşturulması, bilgilerinin güncellenmesi, görüntülenmesi ve silinmesi
-* Randevular sisteme tarih ve saat içerecek şekilde kaydedilmelidir. Bunun için LocalDateTime kullanılmalıdır.
-* Hayvanların her türlü muayenesi için doktorlardan uygun tarihlerde ve saatlerde randevu oluşturulmalıdır.
+✅* Hayvanların aşı ve muayene randevularının oluşturulması, bilgilerinin güncellenmesi, görüntülenmesi ve silinmesi
+✅* Randevular sisteme tarih ve saat içerecek şekilde kaydedilmelidir. Bunun için LocalDateTime kullanılmalıdır.
+✅* Hayvanların her türlü muayenesi için doktorlardan uygun tarihlerde ve saatlerde randevu oluşturulmalıdır.
 Her doktor için sadece saat başı randevu oluşturulabilir. Bir muayenenin sabit olarak bir saat süreceğini kabul edin.
-* Randevu kaydı oluştururken doktorun girilen tarihte müsait günü olup olmadığı eğer ki müsait günü varsa
+✅* Randevu kaydı oluştururken doktorun girilen tarihte müsait günü olup olmadığı eğer ki müsait günü varsa
 randevu kayıtlarında girilen saatte başka bir randevusu olup olmadığı kontrol edilmelidir. Her iki durum
 şartı sağlanırsa randevu oluşturulmalıdır. Şart sağlanmaz ise "Doktor bu tarihte çalışmamaktadır!/Girilen
 saatte başka bir randevu mevcuttur." gibi hata mesajı fırlatılmalıdır. Bunun için custom exception oluşturmalısın.
 * Randevular kullanıcı tarafından girilen tarih aralığına ve doktora göre filtrelenmelidir. Buna ait API end
 point’i oluşturulmalıdır. (randevu için kliniği arayan müşterilerin doktor ve gün taleplerinde uygunluk olup
 olmadığını sorgulamak için kullanılacaktır.) Jpa’nın findBy between kullanımına bakabilirsin.
-* Randevular kullanıcı tarafından girilen tarih aralığına ve hayvana göre filtrelenmelidir. Buna ait API end
-point’i oluşturulmalıdır. Jpa’nın findBy between kullanımına bakabilirsin.
+
 
 Veteriner Doktor Yönetimi
 ✅* Veteriner doktorların kaydedilmesi, bilgilerinin güncellenmesi, görüntülenmesi ve silinmesi

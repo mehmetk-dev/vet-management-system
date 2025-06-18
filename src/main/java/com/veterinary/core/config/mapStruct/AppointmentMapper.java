@@ -15,7 +15,7 @@ public interface AppointmentMapper {
 
     @Mapping(target = "animalId",source = "animal.id")
     @Mapping(target = "doctorId",source = "doctor.id")
-    @Mapping(target = "available",source = "appointmentDate")
+    @Mapping(target = "appointmentDate",source = "appointmentDate")
     AppointmentResponse toResponse(Appointment appointment);
 
     @Mapping(target = "animal", source = "animalId", qualifiedByName = "mapAnimal")

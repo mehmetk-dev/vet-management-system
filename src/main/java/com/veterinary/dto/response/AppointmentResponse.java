@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class AppointmentResponse {
 
     private Long id;
-    private LocalDateTime available;
+    private LocalDateTime appointmentDate;
     private Long doctorId;
     private Long animalId;
 }

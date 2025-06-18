@@ -19,8 +19,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class AppointmentService {
 
@@ -32,7 +30,13 @@ public class AppointmentService {
     private final AnimalService animalService;
     private final AvailableDateRepo availableDateRepo;
 
-    public AppointmentService(AppointmentRepo appointmentRepo, AppointmentMapper appointmentMapper, DoctorRepo doctorRepo, AnimalRepo animalRepo, DoctorService doctorService, AnimalService animalService, AvailableDateRepo availableDateRepo) {
+    public AppointmentService(AppointmentRepo appointmentRepo,
+                              AppointmentMapper appointmentMapper,
+                              DoctorRepo doctorRepo,
+                              AnimalRepo animalRepo,
+                              DoctorService doctorService,
+                              AnimalService animalService,
+                              AvailableDateRepo availableDateRepo) {
         this.appointmentRepo = appointmentRepo;
         this.appointmentMapper = appointmentMapper;
         this.doctorRepo = doctorRepo;
@@ -48,34 +52,45 @@ public class AppointmentService {
         Doctor doctor = this.doctorService.getById(request.getDoctorId());
         Animal animal = this.animalService.getById(request.getAnimalId());
 
-//        boolean isAvailable = doctor.getAvailableDates().stream()
-//                .anyMatch(date -> date.getAvailable().isEqual(request.getAppointmentDate().toLocalDate()));
+        isAvailableDoctor(request);
+        isHoursTaken(request);
 
-        boolean isAvailable = availableDateRepo.existsByDoctorIdAndAvailable(
-                request.getDoctorId(), request.getAppointmentDate().toLocalDate());
-        if (!isAvailable){
-            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.DOCTOR_NOT_AVAILABLE,doctor.getId(),request.getAppointmentDate().toLocalDate()));
-        }
-
-        boolean isHourTaken = appointmentRepo
-                .existsByDoctorIdAndAppointmentDate(doctor.getId(), request.getAppointmentDate());
-
-        if (isHourTaken){
-            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.DOCTOR_NOT_AVAILABLE_THIS_HOUR,doctor.getId(),request.getAppointmentDate()));
-        }
         Appointment appointment = this.appointmentMapper.toEntity(request);
 
         return appointmentMapper.toResponse(appointmentRepo.save(appointment));
     }
 
+    private void isHoursTaken(AppointmentRequest request) {
+        boolean isHourTaken = appointmentRepo
+                .existsByDoctorIdAndAppointmentDate(request.getDoctorId(), request.getAppointmentDate());
+
+        if (isHourTaken){
+            throw new EntityAlreadyExistsException(String.format(
+                    ExceptionMessages.DOCTOR_NOT_AVAILABLE_THIS_HOUR, request.getDoctorId(), request.getAppointmentDate()));
+        }
+    }
+
+    private void isAvailableDoctor(AppointmentRequest request) {
+
+        //        boolean isAvailable = doctor.getAvailableDates().stream()
+        //                .anyMatch(date -> date.getAvailable().isEqual(request.getAppointmentDate().toLocalDate()));
+
+        boolean isAvailable = availableDateRepo.existsByDoctorIdAndAvailable(
+                request.getDoctorId(), request.getAppointmentDate().toLocalDate());
+        if (!isAvailable){
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.DOCTOR_NOT_AVAILABLE,
+                    request.getDoctorId(), request.getAppointmentDate().toLocalDate()));
+        }
+    }
+
     public AppointmentResponse getResponse(long id){
         return appointmentMapper.toResponse(appointmentRepo.findById(id).orElseThrow(
-                () -> new NotFoundException(ExceptionMessages.NOT_FOUND)));
+                () -> new NotFoundException(String.format(ExceptionMessages.APPOINTMENT_NOT_FOUND,id))));
     }
 
     public Appointment getById(long id){
         return appointmentRepo.findById(id).orElseThrow(
-                () -> new NotFoundException(ExceptionMessages.NOT_FOUND));
+                () -> new NotFoundException(String.format(ExceptionMessages.APPOINTMENT_NOT_FOUND,id)));
     }
 
     public void delete(long id){
@@ -84,12 +99,24 @@ public class AppointmentService {
 
     public AppointmentResponse update(long id,AppointmentRequest request){
 
-        this.getById(id);
+        Appointment appointment  = getById(id);
+        Doctor doctor = doctorService.getById(request.getDoctorId());
+        Animal animal = animalService.getById(request.getAnimalId());
 
-        Appointment updated = appointmentMapper.toEntity(request);
-        updated.setId(id);
+        isAvailableDoctor(request);
+        boolean isHoursTakenForUpdate =
+                appointmentRepo.existsByDoctorIdAndAppointmentDateAndIdNot(request.getDoctorId(), request.getAppointmentDate(),id);
 
-        return appointmentMapper.toResponse(updated);
+        if (isHoursTakenForUpdate){
+            throw new EntityAlreadyExistsException(String.format(
+                    ExceptionMessages.DOCTOR_NOT_AVAILABLE_THIS_HOUR, request.getDoctorId(), request.getAppointmentDate()));
+        }
+        appointment.setAnimal(animal);
+        appointment.setDoctor(doctor);
+
+        this.appointmentMapper.updateEntityFromRequest(appointment,request);
+
+        return appointmentMapper.toResponse(appointmentRepo.save(appointment));
     }
 
     public Page<Appointment> getAllAppointment(int page, int pageSize) {

@@ -50,12 +50,12 @@ public class AvailableDateService {
 
     public AvailableDateResponse getResponse(long id){
         return availableDateMapper.toResponse(availableDateRepo.findById(id).orElseThrow(
-                () -> new NotFoundException((ExceptionMessages.NOT_FOUND))));
+                () -> new NotFoundException((String.format(ExceptionMessages.AVAILABLE_DATE_NOT_FOUND,id)))));
     }
 
     public AvailableDate getById(long id){
         return availableDateRepo.findById(id).orElseThrow(
-                () -> new NotFoundException(ExceptionMessages.NOT_FOUND));
+                () -> new NotFoundException(String.format(ExceptionMessages.AVAILABLE_DATE_NOT_FOUND,id)));
     }
 
     public void delete(long id){

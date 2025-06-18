@@ -17,4 +17,7 @@ public class ExceptionMessages {
     public static final String ANIMAL_VACCINES_NOT_FOUND = "%s ID'li hayvana ait aşı bilgisi bulunamadı.";
     public static final String DOCTOR_NOT_AVAILABLE = "%s ID'li doktor %s tarihinde çalışmıyor.";
     public static final String DOCTOR_NOT_AVAILABLE_THIS_HOUR = "%s ID'li doktorun %s saatinde başka bir randevusu mevcut. Başka tarih deneyin.";
+    public static final String APPOINTMENT_NOT_FOUND = "%s ID'li randevu bulunamadı.";
+    public static final String CUSTOMER_NAME_NOT_FOUND = "%s ismiyle alakalı kullanıcı bulunamadı.";
+    public static final String AVAILABLE_DATE_NOT_FOUND = "%s ID'li müsaitlik verisi bulunamadı.";
 }

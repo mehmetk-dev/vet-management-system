@@ -73,7 +73,7 @@ public class CustomerService {
                 responseList.add(customerMapper.toResponse(customer));
             }
         } else {
-            throw new NotFoundException(ExceptionMessages.NOT_FOUND);
+            throw new NotFoundException(String.format(ExceptionMessages.CUSTOMER_NAME_NOT_FOUND,name));
         }
         return responseList;
     }

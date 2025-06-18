@@ -43,12 +43,12 @@ public class DoctorService {
 
     public DoctorResponse getResponse(long id){
         return doctorMapper.toResponse(doctorRepo.findById(id).orElseThrow(
-                () -> new NotFoundException(ExceptionMessages.NOT_FOUND)));
+                () -> new NotFoundException(String.format(ExceptionMessages.DOCTOR_NOT_FOUND,id))));
     }
 
     public Doctor getById(long id){
         return doctorRepo.findById(id).orElseThrow(
-                () -> new NotFoundException(ExceptionMessages.NOT_FOUND));
+                () -> new NotFoundException(String.format(ExceptionMessages.DOCTOR_NOT_FOUND,id)));
     }
 
     public void delete(long id){
