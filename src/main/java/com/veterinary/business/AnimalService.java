@@ -16,6 +16,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -23,15 +24,16 @@ public class AnimalService {
 
     private final AnimalRepo animalRepo;
     private final AnimalMapper animalMapper;
-    private final CustomerRepo customerRepo;
+    private final CustomerService customerService;
     private final CustomerMapper customerMapper;
 
-    public AnimalService(AnimalRepo animalRepo, AnimalMapper animalMapper, CustomerService customerService, CustomerRepo customerRepo, CustomerMapper customerMapper) {
+    public AnimalService(AnimalRepo animalRepo, AnimalMapper animalMapper, CustomerService customerService, CustomerMapper customerMapper) {
         this.animalRepo = animalRepo;
         this.animalMapper = animalMapper;
-        this.customerRepo = customerRepo;
+        this.customerService = customerService;
         this.customerMapper = customerMapper;
     }
+
 
     public AnimalResponse save(AnimalRequest animalRequest) {
         Animal animal = this.animalMapper.toEntity(animalRequest);
@@ -41,30 +43,31 @@ public class AnimalService {
 
     public Animal getById(long id) {
         return this.animalRepo.findById(id).orElseThrow(
-                () -> new NotFoundException(String.format(ExceptionMessages.ANIMAL_NOT_FOUND,id)));
+                () -> new NotFoundException(String.format(ExceptionMessages.ANIMAL_NOT_FOUND, id)));
     }
 
 
     public AnimalResponse update(long id, AnimalRequest animalRequest) {
-        this.getById(id);
 
-        Animal updated = animalMapper.toEntity(animalRequest);
-        updated.setId(id);
+        Animal animal = this.getById(id);
+        Customer customer = customerService.getById(animalRequest.getCustomerId());
+        animal.setCustomer(customer);
 
-        Animal saved = animalRepo.save(updated);
-        return animalMapper.toResponse(saved);
+        animal.setUpdatedAt(LocalDateTime.now());
+        animalMapper.updateEntityFromRequest(animal, animalRequest);
+        return animalMapper.toResponse(animalRepo.save(animal));
     }
 
     public void delete(long id) {
         animalRepo.delete(this.getById(id));
     }
 
-    public Page<Animal> getAllAnimals(int page,int pageSize) {
-        Pageable pageable = PageRequest.of(page,pageSize);
+    public Page<Animal> getAllAnimals(int page, int pageSize) {
+        Pageable pageable = PageRequest.of(page, pageSize);
         return animalRepo.findAll(pageable);
     }
 
-    public List<AnimalResponse> findAllByName(String name){
+    public List<AnimalResponse> findAllByName(String name) {
         List<Animal> animalList = this.animalRepo.findByNameContainingIgnoreCase(name);
 
         return animalList.stream().map(
@@ -74,8 +77,8 @@ public class AnimalService {
 
     public CustomerResponse findCustomerByAnimalId(long id) {
         Customer customer = this.animalRepo.findCustomerByAnimalId(id);
-        if (customer == null){
-            throw new NotFoundException(String.format(ExceptionMessages.ANIMAL_NOT_FOUND,id));
+        if (customer == null) {
+            throw new NotFoundException(String.format(ExceptionMessages.ANIMAL_NOT_FOUND, id));
         }
         return this.customerMapper.toResponse(customer);
     }

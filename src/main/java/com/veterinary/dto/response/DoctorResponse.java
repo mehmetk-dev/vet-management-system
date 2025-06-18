@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -28,5 +29,5 @@ public class DoctorResponse {
 
     private List<LocalDate> availableDate;
 
-    private List<Appointment> appointments;
+    private List<LocalDateTime> appointments;
 }

@@ -44,7 +44,6 @@ public class DoctorController {
     }
 
     @DeleteMapping("/{id}")
-
     public ResponseEntity<String> delete(@PathVariable Long id) {
         doctorService.delete(id);
         return ResponseEntity.ok("ID " + id + " olan doktor başarıyla silindi.");

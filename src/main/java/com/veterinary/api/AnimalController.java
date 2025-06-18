@@ -52,9 +52,9 @@ public class AnimalController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         animalService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(id + " ID'li hayvan başarıyla silindi.");
     }
 
     @GetMapping

@@ -27,6 +27,6 @@ public class Customer extends BaseEntity{
 
     private String address;
 
-    @OneToMany(mappedBy = "customer",cascade = CascadeType.PERSIST,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "customer",cascade = CascadeType.ALL,fetch = FetchType.LAZY)
     private List<Animal> animals;
 }

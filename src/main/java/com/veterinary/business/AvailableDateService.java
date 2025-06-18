@@ -66,7 +66,7 @@ public class AvailableDateService {
 
         AvailableDate availableDate = this.getById(id);
 
-        Long doctorId = availableDate.getDoctor().getId();
+        Long doctorId = request.getDoctorId();
 
         List<LocalDate> availableList = this.availableDateRepo.findAvailableDatesByDoctorId(doctorId);
         for(LocalDate localDate : availableList){
@@ -76,6 +76,7 @@ public class AvailableDateService {
         }
 
         availableDateMapper.updateEntityFromRequest(availableDate,request);
+        availableDate.setDoctor(doctorService.getById(request.getDoctorId()));
 
         return availableDateMapper.toResponse(availableDateRepo.save(availableDate));
     }

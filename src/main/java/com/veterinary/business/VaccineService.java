@@ -18,6 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -38,23 +39,29 @@ public class VaccineService {
     @Transactional
     public VaccineResponse save(VaccineRequest request) {
 
-        if (request.getProtectionStartDate().isAfter(LocalDate.now())) {
+        if (request.getProtectionStartDate().isAfter(LocalDate.now()) ||
+                request.getProtectionFinishDate().isBefore(request.getProtectionStartDate()) ||
+                request.getProtectionFinishDate().isEqual(request.getProtectionStartDate())) {
             throw new BadRequestException(ExceptionMessages.DATE_CANNOT_BE_IN_PAST);
         }
 
         Animal animal = animalService.getById(request.getAnimalId());
 
-        List<Vaccine> existingVaccines = vaccineRepo.findByAnimalIdAndCode(request.getAnimalId(), request.getCode());
-
-        for (Vaccine vaccine : existingVaccines) {
-            if (vaccine.getProtectionFinishDate().isAfter(LocalDate.now())) {
-                throw new EntityAlreadyExistsException(String.format(ExceptionMessages.VACCINE_ALL_READY_EXISTS, request.getCode(), vaccine.getProtectionFinishDate()));
-            }
-        }
+        requestValidate(request);
 
         Vaccine vaccine = this.vaccineMapper.toEntity(request);
         vaccine.setAnimal(animal);
         return this.vaccineMapper.toResponse(vaccineRepo.save(vaccine));
+    }
+
+    private void requestValidate(VaccineRequest request) {
+        List<Vaccine> existingVaccines = vaccineRepo.findByAnimalIdAndCode(request.getAnimalId(), request.getCode());
+
+        for (Vaccine vaccine : existingVaccines) {
+            if (!vaccine.getProtectionFinishDate().isBefore(request.getProtectionStartDate())) {
+                throw new EntityAlreadyExistsException(String.format(ExceptionMessages.VACCINE_ALL_READY_EXISTS, request.getCode(), vaccine.getProtectionFinishDate()));
+            }
+        }
     }
 
     public VaccineResponse getResponse(long id) {
@@ -76,11 +83,17 @@ public class VaccineService {
 
     public VaccineResponse update(long id, VaccineRequest request) {
 
-        if (request.getProtectionFinishDate().isBefore(LocalDate.now()) ||
-                request.getProtectionStartDate().isAfter(request.getProtectionFinishDate())) {
-            throw new BadRequestException(ExceptionMessages.DATE_CANNOT_BE_IN_PAST);
+        List<Vaccine> existingVaccines = vaccineRepo.findByAnimalIdAndCode(request.getAnimalId(), request.getCode());
+        Vaccine existVaccine = this.get(id);
+
+        for (Vaccine vaccine : existingVaccines) {
+            if (!vaccine.getProtectionFinishDate().isBefore(request.getProtectionStartDate()) && !existVaccine.getId().equals(id)) {
+                throw new EntityAlreadyExistsException(String.format(ExceptionMessages.VACCINE_ALL_READY_EXISTS, request.getCode(), vaccine.getProtectionFinishDate()));
+            }
         }
+
         Vaccine existing = this.get(id);
+        existing.setUpdatedAt(LocalDateTime.now());
 
         Animal animal = this.animalService.getById(request.getAnimalId());
         existing.setAnimal(animal);
@@ -102,7 +115,7 @@ public class VaccineService {
         return vaccineList.stream().map(vaccineMapper::toResponse).toList();
     }
 
-    public List<VaccineResponse> getVaccinesExpiringBetween(LocalDate startDate,LocalDate endDate,long customerId) {
+    public List<VaccineResponse> getVaccinesExpiringBetween(LocalDate startDate, LocalDate endDate, long customerId) {
         List<Animal> animalList = this.customerRepo.findAnimalByCustomerId(customerId);
         if (animalList.isEmpty()) {
             throw new NotFoundException(String.format(ExceptionMessages.CUSTOMER_ANIMALS_NOT_FOUND, customerId));
@@ -115,7 +128,6 @@ public class VaccineService {
                 .map(vaccineMapper::toResponse)
                 .toList();
     }
-
 
 
 }

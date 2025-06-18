@@ -45,7 +45,7 @@ public class VaccineController {
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable Long id) {
         vaccineService.delete(id);
-        return ResponseEntity.ok("ID " + id + " olan doktor başarıyla silindi.");
+        return ResponseEntity.ok("ID " + id + " olan aşı başarıyla silindi.");
     }
 
     @GetMapping

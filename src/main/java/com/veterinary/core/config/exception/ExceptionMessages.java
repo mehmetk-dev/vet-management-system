@@ -20,4 +20,6 @@ public class ExceptionMessages {
     public static final String APPOINTMENT_NOT_FOUND = "%s ID'li randevu bulunamadı.";
     public static final String CUSTOMER_NAME_NOT_FOUND = "%s ismiyle alakalı kullanıcı bulunamadı.";
     public static final String AVAILABLE_DATE_NOT_FOUND = "%s ID'li müsaitlik verisi bulunamadı.";
+    public static final String DOCTOR_APPOINTMENT_NOT_FOUND = "%s ID'li doktorun %s tarihinden %s tarihine kadar randevusu bulunamadı";
+    public static final String ANIMAL_APPOINTMENT_NOT_FOUND = "%s ID'li hayvanın %s tarihinden %s tarihine kadar randevusu bulunamadı";
 }

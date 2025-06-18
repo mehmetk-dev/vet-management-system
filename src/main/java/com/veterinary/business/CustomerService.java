@@ -4,7 +4,6 @@ import com.veterinary.core.config.exception.EntityAlreadyExistsException;
 import com.veterinary.core.config.exception.ExceptionMessages;
 import com.veterinary.core.config.exception.NotFoundException;
 import com.veterinary.core.config.mapStruct.CustomerMapper;
-import com.veterinary.core.result.ResultData;
 import com.veterinary.dao.CustomerRepo;
 import com.veterinary.dto.request.CustomerRequest;
 import com.veterinary.dto.response.CustomerResponse;
@@ -14,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,13 +47,21 @@ public class CustomerService {
 
     public CustomerResponse update(long id, CustomerRequest customerRequest) {
 
-        this.getById(id);
+        Customer customer = this.getById(id);
+        if (customerRepo.existsByEmail(customerRequest.getEmail())
+                && !customerRequest.getEmail().equalsIgnoreCase(customer.getEmail())){
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.EMAIL_EXISTS,customerRequest.getEmail()));
+        }
 
-        Customer updated = customerMapper.toEntity(customerRequest);
-        updated.setId(id);
+        if (customerRepo.existsByPhone(customerRequest.getPhone())
+                && !customerRequest.getPhone().equalsIgnoreCase(customer.getPhone())){
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.PHONE_EXISTS,customerRequest.getPhone()));
+        }
 
-        Customer saved = customerRepo.save(updated);
-        return customerMapper.toResponse(saved);
+        this.customerMapper.updateEntityFromRequest(customer,customerRequest);
+        customer.setUpdatedAt(LocalDateTime.now());
+
+        return customerMapper.toResponse(customerRepo.save(customer));
     }
 
     public void delete(Long id) {

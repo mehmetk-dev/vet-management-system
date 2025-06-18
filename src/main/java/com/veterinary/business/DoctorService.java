@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -61,14 +62,15 @@ public class DoctorService {
 
         Optional<Doctor> byEmail = doctorRepo.findByEmail(doctorRequest.getEmail());
         if (byEmail.isPresent() && byEmail.get().getId() != id) {
-            throw new EntityAlreadyExistsException("E-posta başka bir doktora ait.");
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.EMAIL_EXISTS,doctorRequest.getEmail()));
         }
 
         Optional<Doctor> byPhone = doctorRepo.findByPhone(doctorRequest.getPhone());
         if (byPhone.isPresent() && byPhone.get().getId() != id) {
-            throw new EntityAlreadyExistsException("Telefon numarası başka bir doktora ait.");
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.PHONE_EXISTS,doctorRequest.getPhone()));
         }
 
+        exists.setUpdatedAt(LocalDateTime.now());
         doctorMapper.updateEntityFromRequest(exists, doctorRequest);
         return doctorMapper.toResponse(doctorRepo.save(exists));
     }

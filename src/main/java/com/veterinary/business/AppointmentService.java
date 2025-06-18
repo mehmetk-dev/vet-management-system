@@ -19,13 +19,15 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Service
 public class AppointmentService {
 
     private final AppointmentRepo appointmentRepo;
     private final AppointmentMapper appointmentMapper;
-    private final DoctorRepo doctorRepo;
-    private final AnimalRepo animalRepo;
     private final DoctorService doctorService;
     private final AnimalService animalService;
     private final AvailableDateRepo availableDateRepo;
@@ -39,8 +41,6 @@ public class AppointmentService {
                               AvailableDateRepo availableDateRepo) {
         this.appointmentRepo = appointmentRepo;
         this.appointmentMapper = appointmentMapper;
-        this.doctorRepo = doctorRepo;
-        this.animalRepo = animalRepo;
         this.doctorService = doctorService;
         this.animalService = animalService;
         this.availableDateRepo = availableDateRepo;
@@ -113,7 +113,6 @@ public class AppointmentService {
         }
         appointment.setAnimal(animal);
         appointment.setDoctor(doctor);
-
         this.appointmentMapper.updateEntityFromRequest(appointment,request);
 
         return appointmentMapper.toResponse(appointmentRepo.save(appointment));
@@ -124,4 +123,19 @@ public class AppointmentService {
         return appointmentRepo.findAll(pageable);
     }
 
+    public List<AppointmentResponse> getAppointmentsByDoctorAndDateRange(long doctorId, LocalDateTime startDate, LocalDateTime endDate){
+        List<Appointment> appointments = this.appointmentRepo.findByDoctorIdAndAppointmentDateBetween(doctorId,startDate,endDate);
+        if (appointments.isEmpty()){
+            throw new NotFoundException(String.format(ExceptionMessages.DOCTOR_APPOINTMENT_NOT_FOUND,doctorId,startDate,endDate));
+        }
+        return appointments.stream().map(appointmentMapper::toResponse).toList();
+    }
+
+    public List<AppointmentResponse> getAppointmentsByAnimalAndDateRange(long animalId, LocalDateTime startDate, LocalDateTime endDate){
+        List<Appointment> appointments = this.appointmentRepo.findByAnimalIdAndAppointmentDateBetween(animalId,startDate,endDate);
+        if (appointments.isEmpty()){
+            throw new NotFoundException(String.format(ExceptionMessages.ANIMAL_APPOINTMENT_NOT_FOUND,animalId,startDate,endDate));
+        }
+        return appointments.stream().map(appointmentMapper::toResponse).toList();
+    }
 }
