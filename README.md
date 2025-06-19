@@ -26,6 +26,46 @@ Veteriner klinikleri için geliştirilen bu sistem, müşteri, hayvan, doktor, r
 
 ---
 
+# Proje Kurulumu
+
+## Java Uygulamasını Çalıştırma
+
+### 1. Projeyi Klonlayın veya İndirin
+
+```bash
+git clone https://github.com/mehmetk-dev/vet-management-system.git
+cd vet-management-system
+```
+
+### 2. Maven Bağımlılıklarını Yükleyin
+
+```bash
+mvn clean install
+```
+
+### 3. Uygulamayı Başlatın
+
+```bash
+mvn spring-boot:run
+```
+
+> Uygulama başarıyla başlatıldığında `http://localhost:8080` üzerinden API isteklerini almaya hazır olur.
+
+### 4. application.properties Örneği
+
+`src/main/resources/application.properties` içinde aşağıdaki gibi bir yapı olmalı:
+
+```properties
+spring.datasource.url=jdbc:postgresql://localhost:5432/VeterinaryBase
+spring.datasource.username=postgres
+spring.datasource.password=parolanız
+spring.jpa.hibernate.ddl-auto=none
+spring.jpa.show-sql=true
+spring.jpa.properties.hibernate.format_sql=true
+```
+
+---
+
 ## Veritabanı Kurulumu
 
 ### 1. PostgreSQL Kurulumu
@@ -63,7 +103,7 @@ psql -U postgres -d VeterinaryBase -f ./veterinary.sql
 
 ---
 
-## 📬 Postman Koleksiyonu Kurulumu
+## Postman Koleksiyonu Kurulumu
 
 ### 1. Postman Kurulumu
 
@@ -83,44 +123,6 @@ psql -U postgres -d VeterinaryBase -f ./veterinary.sql
 - Tüm istekler `http://localhost:8080` adresine yönlendirilmiştir
 - Backend uygulamanız 8080 portunda çalışır durumda olmalıdır
 - `GET`, `POST`, `PUT`, `DELETE` istekleri hazırdır
-
----
-
-## 🛠️ Java Uygulamasını Çalıştırma
-
-### 1. Projeyi Klonlayın veya İndirin
-
-```bash
-git clone https://github.com/mehmetk-dev/vet-management-system.git
-cd vet-management-system
-```
-
-### 2. Maven Bağımlılıklarını Yükleyin
-
-```bash
-mvn clean install
-```
-
-### 3. Uygulamayı Başlatın
-
-```bash
-mvn spring-boot:run
-```
-
-> Uygulama başarıyla başlatıldığında `http://localhost:8080` üzerinden API isteklerini almaya hazır olur.
-
-### 4. application.properties Örneği
-
-`src/main/resources/application.properties` içinde aşağıdaki gibi bir yapı olmalı:
-
-```properties
-spring.datasource.url=jdbc:postgresql://localhost:5432/VeterinaryBase
-spring.datasource.username=postgres
-spring.datasource.password=parolanız
-spring.jpa.hibernate.ddl-auto=none
-spring.jpa.show-sql=true
-spring.jpa.properties.hibernate.format_sql=true
-```
 
 ---
 
