@@ -86,17 +86,17 @@ Eğer sisteminizde PostgreSQL yüklü değilse, [https://www.postgresql.org/down
 createdb -U postgres VeterinaryBase
 ```
 
-### 3. `.sql` Dosyasını Yükleme
+### 3. `veterinary_database.sql` Dosyasını Yükleme
 
 #### Yöntem 1: pgAdmin (GUI)
 
 - Yeni oluşturduğun veritabanına sağ tık → **Query Tool**
-- `veterinary.sql` dosyasını aç ve çalıştır (Run ▶️)
+- `veterinary_database.sql` dosyasını aç ve çalıştır (Run ▶️)
 
 #### Yöntem 2: Terminal
 
 ```bash
-psql -U postgres -d VeterinaryBase -f ./veterinary.sql
+psql -U postgres -d VeterinaryBase -f ./veterinary_database.sql
 ```
 
 > Bu adım sonunda tüm tablolar ve örnek veriler veritabanına yüklenecektir.
