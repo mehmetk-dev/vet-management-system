@@ -20,7 +20,7 @@ public class AvailableDate {
 
     private LocalDate available;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     private Doctor doctor;
 }

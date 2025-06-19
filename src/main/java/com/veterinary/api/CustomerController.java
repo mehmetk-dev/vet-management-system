@@ -34,7 +34,6 @@ public class CustomerController {
     }
 
     @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<CustomerResponse> save(@Valid @RequestBody CustomerRequest customerRequest){
         Customer customer = customerMapper.toEntity(customerRequest);
         Customer savedCustomer = customerService.save(customer);
@@ -53,12 +52,13 @@ public class CustomerController {
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<String> delete(@PathVariable Long id) {
         customerService.delete(id);
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(id + "ID'li müşteri silindi.");
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public ResultData<CursorResponse<CustomerResponse>> getCustomers(
             @RequestParam(name = "page",defaultValue = "0") int page,
             @RequestParam(name = "pageSize",defaultValue = "10") int pageSize
@@ -76,6 +76,7 @@ public class CustomerController {
 
 
     @GetMapping("/{id}/animals")
+    @ResponseStatus(HttpStatus.OK)
     public ResultData<List<String>> getAnimalsByCustomer(@PathVariable("id")long id){
         List<String> animalNameList = this.customerService.getAnimalsByCustomerId(id);
         return new ResultData<>(true,"200",id + " ID'li kullanıcının hayvan listesi",animalNameList);

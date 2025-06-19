@@ -10,9 +10,12 @@ import java.time.LocalDate;
 import java.util.List;
 
 @Repository
-public interface AvailableDateRepo extends JpaRepository<AvailableDate,Long> {
+public interface AvailableDateRepo extends JpaRepository<AvailableDate, Long> {
+
+    //Belirlenen doktorun o gün müsait olup olmamasını döner
     boolean existsByDoctorIdAndAvailable(Long doctorId, LocalDate availableDate);
 
+    //Belirlenen doktorun çalıştığı günleri döner
     @Query("SELECT a.available FROM AvailableDate a WHERE a.doctor.id = :id")
     List<LocalDate> findAvailableDatesByDoctorId(@Param("id") Long doctorId);
 

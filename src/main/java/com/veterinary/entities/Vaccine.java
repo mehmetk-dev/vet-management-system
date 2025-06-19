@@ -1,9 +1,6 @@
 package com.veterinary.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -27,7 +24,7 @@ public class Vaccine extends BaseEntity{
 
     private LocalDate protectionFinishDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "animal_id",referencedColumnName = "id")
     private Animal animal;
 }

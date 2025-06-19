@@ -31,10 +31,10 @@ public class AvailableDateService {
         this.doctorService = doctorService;
     }
 
-    public AvailableDateResponse save(AvailableDateRequest request){
+    public AvailableDateResponse save(AvailableDateRequest request) {
 
-        if (availableDateRepo.existsByDoctorIdAndAvailable(request.getDoctorId(),request.getAvailable())){
-            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.DOCTOR_ALREADY_AVAILABLE_ON_DATE,request.getDoctorId(),request.getAvailable()));
+        if (availableDateRepo.existsByDoctorIdAndAvailable(request.getDoctorId(), request.getAvailable())) {
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.DOCTOR_ALREADY_AVAILABLE_ON_DATE, request.getDoctorId(), request.getAvailable()));
         }
 
         if (request.getAvailable().isBefore(LocalDate.now())) {
@@ -48,41 +48,41 @@ public class AvailableDateService {
         return availableDateMapper.toResponse(availableDateRepo.save(date));
     }
 
-    public AvailableDateResponse getResponse(long id){
+    public AvailableDateResponse getResponse(long id) {
         return availableDateMapper.toResponse(availableDateRepo.findById(id).orElseThrow(
-                () -> new NotFoundException((String.format(ExceptionMessages.AVAILABLE_DATE_NOT_FOUND,id)))));
+                () -> new NotFoundException((String.format(ExceptionMessages.AVAILABLE_DATE_NOT_FOUND, id)))));
     }
 
-    public AvailableDate getById(long id){
+    public AvailableDate getById(long id) {
         return availableDateRepo.findById(id).orElseThrow(
-                () -> new NotFoundException(String.format(ExceptionMessages.AVAILABLE_DATE_NOT_FOUND,id)));
+                () -> new NotFoundException(String.format(ExceptionMessages.AVAILABLE_DATE_NOT_FOUND, id)));
     }
 
-    public void delete(long id){
+    public void delete(long id) {
         this.availableDateRepo.delete(this.getById(id));
     }
 
-    public AvailableDateResponse update(long id,AvailableDateRequest request){
+    public AvailableDateResponse update(long id, AvailableDateRequest request) {
 
         AvailableDate availableDate = this.getById(id);
 
         Long doctorId = request.getDoctorId();
 
         List<LocalDate> availableList = this.availableDateRepo.findAvailableDatesByDoctorId(doctorId);
-        for(LocalDate localDate : availableList){
-            if (request.getAvailable().equals(localDate) && !request.getAvailable().equals(availableDate.getAvailable())){
-                throw new EntityAlreadyExistsException(String.format(ExceptionMessages.DOCTOR_ALREADY_AVAILABLE_ON_DATE,doctorId,request.getAvailable()));
+        for (LocalDate localDate : availableList) {
+            if (request.getAvailable().equals(localDate) && !request.getAvailable().equals(availableDate.getAvailable())) {
+                throw new EntityAlreadyExistsException(String.format(ExceptionMessages.DOCTOR_ALREADY_AVAILABLE_ON_DATE, doctorId, request.getAvailable()));
             }
         }
 
-        availableDateMapper.updateEntityFromRequest(availableDate,request);
+        availableDateMapper.updateEntityFromRequest(availableDate, request);
         availableDate.setDoctor(doctorService.getById(request.getDoctorId()));
 
         return availableDateMapper.toResponse(availableDateRepo.save(availableDate));
     }
 
     public Page<AvailableDate> getAllAvailableDates(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page,pageSize);
+        Pageable pageable = PageRequest.of(page, pageSize);
         return availableDateRepo.findAll(pageable);
     }
 

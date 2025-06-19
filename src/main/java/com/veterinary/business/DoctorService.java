@@ -28,31 +28,31 @@ public class DoctorService {
         this.doctorRepo = doctorRepo;
     }
 
-    public DoctorResponse save(DoctorRequest doctorRequest){
+    public DoctorResponse save(DoctorRequest doctorRequest) {
         Doctor doctor = this.doctorMapper.toEntity(doctorRequest);
 
         if (doctorRepo.existsByEmail(doctor.getEmail())) {
-            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.EMAIL_EXISTS,doctor.getEmail()));
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.EMAIL_EXISTS, doctor.getEmail()));
         }
 
         if (doctorRepo.existsByPhone(doctor.getPhone())) {
-            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.PHONE_EXISTS,doctor.getPhone()));
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.PHONE_EXISTS, doctor.getPhone()));
         }
 
         return doctorMapper.toResponse(doctorRepo.save(doctor));
     }
 
-    public DoctorResponse getResponse(long id){
+    public DoctorResponse getResponse(long id) {
         return doctorMapper.toResponse(doctorRepo.findById(id).orElseThrow(
-                () -> new NotFoundException(String.format(ExceptionMessages.DOCTOR_NOT_FOUND,id))));
+                () -> new NotFoundException(String.format(ExceptionMessages.DOCTOR_NOT_FOUND, id))));
     }
 
-    public Doctor getById(long id){
+    public Doctor getById(long id) {
         return doctorRepo.findById(id).orElseThrow(
-                () -> new NotFoundException(String.format(ExceptionMessages.DOCTOR_NOT_FOUND,id)));
+                () -> new NotFoundException(String.format(ExceptionMessages.DOCTOR_NOT_FOUND, id)));
     }
 
-    public void delete(long id){
+    public void delete(long id) {
         this.doctorRepo.delete(this.getById(id));
     }
 
@@ -62,12 +62,12 @@ public class DoctorService {
 
         Optional<Doctor> byEmail = doctorRepo.findByEmail(doctorRequest.getEmail());
         if (byEmail.isPresent() && byEmail.get().getId() != id) {
-            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.EMAIL_EXISTS,doctorRequest.getEmail()));
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.EMAIL_EXISTS, doctorRequest.getEmail()));
         }
 
         Optional<Doctor> byPhone = doctorRepo.findByPhone(doctorRequest.getPhone());
         if (byPhone.isPresent() && byPhone.get().getId() != id) {
-            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.PHONE_EXISTS,doctorRequest.getPhone()));
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.PHONE_EXISTS, doctorRequest.getPhone()));
         }
 
         exists.setUpdatedAt(LocalDateTime.now());
@@ -76,7 +76,7 @@ public class DoctorService {
     }
 
     public Page<Doctor> getAllDoctors(int page, int pageSize) {
-        Pageable pageable = PageRequest.of(page,pageSize);
+        Pageable pageable = PageRequest.of(page, pageSize);
         return doctorRepo.findAll(pageable);
     }
 

@@ -30,18 +30,18 @@ public class CustomerService {
 
     public Customer save(Customer customer) {
         if (customerRepo.existsByEmail(customer.getEmail())) {
-            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.EMAIL_EXISTS,customer.getEmail()));
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.EMAIL_EXISTS, customer.getEmail()));
         }
 
         if (customerRepo.existsByPhone(customer.getPhone())) {
-            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.PHONE_EXISTS,customer.getPhone()));
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.PHONE_EXISTS, customer.getPhone()));
         }
         return this.customerRepo.save(customer);
     }
 
     public Customer getById(long id) {
         return this.customerRepo.findById(id).orElseThrow(
-                () -> new NotFoundException(String.format(ExceptionMessages.CUSTOMER_NOT_FOUND,id)));
+                () -> new NotFoundException(String.format(ExceptionMessages.CUSTOMER_NOT_FOUND, id)));
     }
 
 
@@ -49,16 +49,16 @@ public class CustomerService {
 
         Customer customer = this.getById(id);
         if (customerRepo.existsByEmail(customerRequest.getEmail())
-                && !customerRequest.getEmail().equalsIgnoreCase(customer.getEmail())){
-            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.EMAIL_EXISTS,customerRequest.getEmail()));
+                && !customerRequest.getEmail().equalsIgnoreCase(customer.getEmail())) {
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.EMAIL_EXISTS, customerRequest.getEmail()));
         }
 
         if (customerRepo.existsByPhone(customerRequest.getPhone())
-                && !customerRequest.getPhone().equalsIgnoreCase(customer.getPhone())){
-            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.PHONE_EXISTS,customerRequest.getPhone()));
+                && !customerRequest.getPhone().equalsIgnoreCase(customer.getPhone())) {
+            throw new EntityAlreadyExistsException(String.format(ExceptionMessages.PHONE_EXISTS, customerRequest.getPhone()));
         }
 
-        this.customerMapper.updateEntityFromRequest(customer,customerRequest);
+        this.customerMapper.updateEntityFromRequest(customer, customerRequest);
         customer.setUpdatedAt(LocalDateTime.now());
 
         return customerMapper.toResponse(customerRepo.save(customer));
@@ -73,6 +73,7 @@ public class CustomerService {
         return customerRepo.findAll(pageable);
     }
 
+    //Verilen isme göre arama yapan metot
     public List<CustomerResponse> getAllByName(String name) {
         List<CustomerResponse> responseList = new ArrayList<>();
         List<Customer> customerList = this.customerRepo.findByNameContainingIgnoreCase(name);
@@ -81,7 +82,7 @@ public class CustomerService {
                 responseList.add(customerMapper.toResponse(customer));
             }
         } else {
-            throw new NotFoundException(String.format(ExceptionMessages.CUSTOMER_NAME_NOT_FOUND,name));
+            throw new NotFoundException(String.format(ExceptionMessages.CUSTOMER_NAME_NOT_FOUND, name));
         }
         return responseList;
     }
@@ -90,7 +91,7 @@ public class CustomerService {
         getById(id); //id kontrolü
         List<String> animalNameList = this.customerRepo.findAnimalsNameByCustomerId(id);
         if (animalNameList.isEmpty()) {
-            throw new NotFoundException(String.format(ExceptionMessages.CUSTOMER_ANIMALS_NOT_FOUND,id));
+            throw new NotFoundException(String.format(ExceptionMessages.CUSTOMER_ANIMALS_NOT_FOUND, id));
         }
         return animalNameList;
     }

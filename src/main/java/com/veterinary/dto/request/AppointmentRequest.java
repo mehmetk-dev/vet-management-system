@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AppointmentRequest {
 
+    //Sadece saat başlarında randevu alınsın diye yazdığım anotasyon
     @HourOnly
     private LocalDateTime appointmentDate;
     private Long doctorId;

@@ -20,11 +20,11 @@ public class Appointment {
 
     private LocalDateTime appointmentDate;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "animal_id",referencedColumnName = "id")
     private Animal animal;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "doctor_id", referencedColumnName = "id")
     private Doctor doctor;
 }

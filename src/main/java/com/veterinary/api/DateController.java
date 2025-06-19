@@ -33,13 +33,13 @@ public class DateController {
 
     @GetMapping("/{id}")
     public ResponseEntity<AvailableDateResponse> get(@PathVariable("id")long id){
-        return ResponseEntity.status(HttpStatus.CREATED).body(this.service.getResponse(id));
+        return ResponseEntity.status(HttpStatus.OK).body(this.service.getResponse(id));
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<String> delete(@PathVariable("id")long id){
         this.service.delete(id);
-        return ResponseEntity.ok("Kayıt Başarıyla Silindi.");
+        return ResponseEntity.ok(id + " ID'li Kayıt Başarıyla Silindi.");
     }
 
     @PutMapping("/{id}")
@@ -49,6 +49,7 @@ public class DateController {
     }
 
     @GetMapping
+    @ResponseStatus(HttpStatus.OK)
     public ResultData<CursorResponse<AvailableDateResponse>> getAllDates(
             @RequestParam(name = "page",defaultValue = "0") int page,
             @RequestParam(name = "pageSize",defaultValue = "10") int pageSize

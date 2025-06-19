@@ -10,9 +10,14 @@ import java.util.List;
 
 
 @Repository
-public interface VaccineRepo extends JpaRepository<Vaccine,Long> {
+public interface VaccineRepo extends JpaRepository<Vaccine, Long> {
+
     boolean existsByCode(String code);
+
+    //Belirlenen hayvan ve koda göre aşı listesi döndürür
     List<Vaccine> findByAnimalIdAndCode(Long animalId, String code);
+
+    //Belirlenen hayvanın aşı listesini geri döndürür
     @Query("SELECT v FROM Vaccine v WHERE v.animal.id = :animalId")
     List<Vaccine> findVaccinesByAnimalId(@Param("animalId") long animalId);
 }

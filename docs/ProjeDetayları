@@ -39,7 +39,7 @@ Her doktor için sadece saat başı randevu oluşturulabilir. Bir muayenenin sab
 randevu kayıtlarında girilen saatte başka bir randevusu olup olmadığı kontrol edilmelidir. Her iki durum
 şartı sağlanırsa randevu oluşturulmalıdır. Şart sağlanmaz ise "Doktor bu tarihte çalışmamaktadır!/Girilen
 saatte başka bir randevu mevcuttur." gibi hata mesajı fırlatılmalıdır. Bunun için custom exception oluşturmalısın.
-* Randevular kullanıcı tarafından girilen tarih aralığına ve doktora göre filtrelenmelidir. Buna ait API end
+✅* Randevular kullanıcı tarafından girilen tarih aralığına ve doktora göre filtrelenmelidir. Buna ait API end
 point’i oluşturulmalıdır. (randevu için kliniği arayan müşterilerin doktor ve gün taleplerinde uygunluk olup
 olmadığını sorgulamak için kullanılacaktır.) Jpa’nın findBy between kullanımına bakabilirsin.
 
@@ -79,9 +79,6 @@ Spring Web, Spring Data Jpa, PostgreSQL, MySQL dependencyleri eklenmelidir.
 Kendi isminizle Postman'de bir collection oluşturun. Tüm API endpointlerini ilgili entity'ye göre
 bu colleciton'a klasör klasör kaydedin. (Kaydedilen request JSON gönderiyorsa, JSON dataları da bulunsun)
  Bu collection'ı export ederek  proje klasörüne ekleyin ve github’ınıza pushlayın.
-
-Başarılar.
-
 
 Projede Bulunan Entityler
 

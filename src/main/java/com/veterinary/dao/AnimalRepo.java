@@ -11,8 +11,11 @@ import java.util.List;
 
 @Repository
 public interface AnimalRepo extends JpaRepository<Animal,Long> {
+
+    //Belirli isimdeki hayvanların listesini döner
     List<Animal>findByNameContainingIgnoreCase(String name);
-    List<Animal>findByCustomerName(String name);
+
+    //Belirli hayvanın sahibini döner
     @Query("SELECT a.customer FROM Animal a WHERE a.id = :id")
     Customer findCustomerByAnimalId(@Param("id") Long id);
 }

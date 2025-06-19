@@ -39,9 +39,8 @@ public class VaccineService {
     @Transactional
     public VaccineResponse save(VaccineRequest request) {
 
-        if (request.getProtectionStartDate().isAfter(LocalDate.now()) ||
-                request.getProtectionFinishDate().isBefore(request.getProtectionStartDate()) ||
-                request.getProtectionFinishDate().isEqual(request.getProtectionStartDate())) {
+        //Aşının bitiş tarihinin başlangıç tarihini geçmemesi için kontrol
+        if (request.getProtectionFinishDate().isBefore(request.getProtectionStartDate())) {
             throw new BadRequestException(ExceptionMessages.DATE_CANNOT_BE_IN_PAST);
         }
 
@@ -54,6 +53,7 @@ public class VaccineService {
         return this.vaccineMapper.toResponse(vaccineRepo.save(vaccine));
     }
 
+    //Girilen aynı koddaki aşının geçerlilik tarihini kontrol eder
     private void requestValidate(VaccineRequest request) {
         List<Vaccine> existingVaccines = vaccineRepo.findByAnimalIdAndCode(request.getAnimalId(), request.getCode());
 
@@ -86,6 +86,7 @@ public class VaccineService {
         List<Vaccine> existingVaccines = vaccineRepo.findByAnimalIdAndCode(request.getAnimalId(), request.getCode());
         Vaccine existVaccine = this.get(id);
 
+        //Girilen aynı koddaki aşının geçerlilik tarihini kontrol eder ve güncelleme için kendi id kontrolü yapar
         for (Vaccine vaccine : existingVaccines) {
             if (!vaccine.getProtectionFinishDate().isBefore(request.getProtectionStartDate()) && !existVaccine.getId().equals(id)) {
                 throw new EntityAlreadyExistsException(String.format(ExceptionMessages.VACCINE_ALL_READY_EXISTS, request.getCode(), vaccine.getProtectionFinishDate()));
@@ -120,6 +121,7 @@ public class VaccineService {
         if (animalList.isEmpty()) {
             throw new NotFoundException(String.format(ExceptionMessages.CUSTOMER_ANIMALS_NOT_FOUND, customerId));
         }
+        //Hayvan listesindeki bütün hayvanların aşı listesini dışardan aldığı parametrelerle kontrol eder ve liste döndürür
         return animalList.stream()
                 .flatMap(animal -> animal.getVaccines().stream()
                         .filter(vaccine ->

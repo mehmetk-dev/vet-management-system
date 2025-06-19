@@ -10,10 +10,14 @@ import org.springframework.stereotype.Repository;
 import java.util.Optional;
 
 @Repository
-public interface DoctorRepo extends JpaRepository<Doctor,Long> {
+public interface DoctorRepo extends JpaRepository<Doctor, Long> {
+
     boolean existsByEmail(String email);
+
     boolean existsByPhone(String email);
+
     Optional<Doctor> findByEmail(String email);
+
     Optional<Doctor> findByPhone(String phone);
 
 }
