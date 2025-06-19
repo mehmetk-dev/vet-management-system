@@ -148,7 +148,6 @@ COPY public.vaccines (protection_finish_date, protection_start_date, animal_id, 
 2024-06-06	2022-07-06	1	2025-06-19 12:10:36.425588	17	\N	209	HX
 \.
 
-
 --
 -- TOC entry 4950 (class 0 OID 0)
 -- Dependencies: 217
