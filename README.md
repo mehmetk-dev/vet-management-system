@@ -185,5 +185,10 @@ psql -U postgres -d VeterinaryBase -f ./veterinary_database.sql
 
 ---
 
+## Veritabanı ER Diyagramı
+
+Aşağıdaki ER diyagramı, sistemdeki veritabanı tablolarının birbirleriyle olan ilişkilerini göstermektedir.
+
+![Veritabanı ER Diyagramı](./docs/DatabaseDiagram.png)
 
 Proje incelediğiniz için teşekkür ederim.
