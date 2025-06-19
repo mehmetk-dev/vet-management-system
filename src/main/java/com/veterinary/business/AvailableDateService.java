@@ -38,7 +38,7 @@ public class AvailableDateService {
         }
 
         if (request.getAvailable().isBefore(LocalDate.now())) {
-            throw new BadRequestException(ExceptionMessages.DATE_CANNOT_BE_IN_PAST);
+            throw new BadRequestException(ExceptionMessages.AVAILABLE_DATE_CANNOT_BE_IN_PAST);
         }
 
         AvailableDate date = availableDateMapper.toEntity(request);
