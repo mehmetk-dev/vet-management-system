@@ -13,7 +13,7 @@ public class ResultHelper {
     }
 
     public static <T> ResultData<T> success(T data){
-        return new ResultData<>(true, "İşlem Başarılıaa","200",data);
+        return new ResultData<>(true, "İşlem Başarılı","200",data);
     }
 
 
