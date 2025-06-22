@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogContent
 } from '@mui/material';
-import api from '../api';
+import { api, extractList } from '../api';
 import SnackbarAlert from '../components/SnackbarAlert';
 
 function Animals() {
@@ -25,17 +25,9 @@ function Animals() {
   const fetchAnimals = async () => {
     setLoading(true);
     try {
-      // Filtreli veya filtresiz URL oluşturuluyor
       const url = filter ? `/animals?name=${filter}` : '/animals';
-
       const res = await api.get(url);
-
-      // response yapısına göre data işleniyor
-      const list = Array.isArray(res.data)
-        ? res.data
-        : res.data.data?.items || res.data.data?.content || [];
-
-      setAnimals(list);
+      setAnimals(extractList(res));
     } catch (err) {
       setSnackbar({ open: true, message: 'Failed to load animals', severity: 'error' });
     } finally {
@@ -49,23 +41,16 @@ function Animals() {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" color="primary" gutterBottom>
         Animals
       </Typography>
-
-      <TextField
-        label="Filter by name"
-        value={filter}
-        onChange={(e) => setFilter(e.target.value)}
-        sx={{ mb: 2 }}
-      />
-
+      <TextField label="Filter by name" value={filter} onChange={(e) => setFilter(e.target.value)} sx={{ mb: 2 }} />
       {loading ? (
         <CircularProgress />
       ) : (
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Species</TableCell>
@@ -74,12 +59,7 @@ function Animals() {
           </TableHead>
           <TableBody>
             {animals.map((a) => (
-              <TableRow
-                key={a.id}
-                hover
-                onClick={() => setSelected(a)}
-                style={{ cursor: 'pointer' }}
-              >
+              <TableRow key={a.id} hover onClick={() => setSelected(a)} style={{ cursor: 'pointer' }}>
                 <TableCell>{a.id}</TableCell>
                 <TableCell>{a.name}</TableCell>
                 <TableCell>{a.species}</TableCell>
@@ -90,7 +70,7 @@ function Animals() {
         </Table>
       )}
 
-      <Dialog open={Boolean(selected)} onClose={() => setSelected(null)}>
+      <Dialog open={Boolean(selected)} onClose={() => setSelected(null)} fullWidth maxWidth="sm">
         <DialogTitle>Animal Details</DialogTitle>
         <DialogContent>
           {selected && (

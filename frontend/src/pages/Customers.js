@@ -14,7 +14,7 @@ import {
   DialogActions,
   TextField
 } from '@mui/material';
-import api from '../api';
+import { api, extractList } from '../api';
 import SnackbarAlert from '../components/SnackbarAlert';
 
 const emptyCustomer = { id: null, name: '', phone: '', email: '', city: '', address: '' };
@@ -30,8 +30,7 @@ function Customers() {
     setLoading(true);
     try {
       const res = await api.get('/customers');
-      const list = res.data.data ? res.data.data.content : res.data;
-      setCustomers(list);
+      setCustomers(extractList(res));
     } catch (err) {
       setSnackbar({ open: true, message: 'Failed to load customers', severity: 'error' });
     } finally {
@@ -81,16 +80,16 @@ function Customers() {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" color="primary" gutterBottom>
         Customers
       </Typography>
-      <Button variant="contained" onClick={() => handleOpen()}>Add Customer</Button>
+      <Button variant="contained" color="primary" onClick={() => handleOpen()}>Add Customer</Button>
       {loading ? (
         <CircularProgress />
       ) : (
         <Table sx={{ mt: 2 }}>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Phone</TableCell>
@@ -110,8 +109,12 @@ function Customers() {
                 <TableCell>{c.city}</TableCell>
                 <TableCell>{c.address}</TableCell>
                 <TableCell>
-                  <Button size="small" onClick={() => handleOpen(c)}>Edit</Button>
-                  <Button size="small" color="error" onClick={() => handleDelete(c.id)}>Delete</Button>
+                  <Button variant="contained" size="small" color="secondary" onClick={() => handleOpen(c)}>
+                    Edit
+                  </Button>
+                  <Button variant="contained" size="small" color="error" onClick={() => handleDelete(c.id)} sx={{ ml: 1 }}>
+                    Delete
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -119,7 +122,7 @@ function Customers() {
         </Table>
       )}
 
-      <Dialog open={open} onClose={handleClose} fullWidth>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>{editData.id ? 'Edit Customer' : 'Add Customer'}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <TextField label="Name" value={editData.name} onChange={handleChange('name')} />
@@ -129,8 +132,8 @@ function Customers() {
           <TextField label="Address" value={editData.address} onChange={handleChange('address')} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+          <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
       <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
