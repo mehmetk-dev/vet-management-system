@@ -13,13 +13,14 @@ import {
   DialogContent
 } from '@mui/material';
 import api from '../api';
+import SnackbarAlert from '../components/SnackbarAlert';
 
 function Animals() {
   const [animals, setAnimals] = useState([]);
   const [filter, setFilter] = useState('');
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [selected, setSelected] = useState(null);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'error' });
 
   const fetchAnimals = async () => {
     setLoading(true);
@@ -36,7 +37,7 @@ function Animals() {
 
       setAnimals(list);
     } catch (err) {
-      setError('Failed to load animals');
+      setSnackbar({ open: true, message: 'Failed to load animals', severity: 'error' });
     } finally {
       setLoading(false);
     }
@@ -61,8 +62,6 @@ function Animals() {
 
       {loading ? (
         <CircularProgress />
-      ) : error ? (
-        <Typography color="error">{error}</Typography>
       ) : (
         <Table>
           <TableHead>
@@ -105,6 +104,7 @@ function Animals() {
           )}
         </DialogContent>
       </Dialog>
+      <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
     </div>
   );
 }

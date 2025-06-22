@@ -15,49 +15,39 @@ import {
   CircularProgress
 } from '@mui/material';
 import api from '../api';
+import SnackbarAlert from '../components/SnackbarAlert';
 
-const emptyAppointment = {
-  id: null,
-  appointmentDate: '',
-  doctorId: '',
-  animalId: ''
-};
+const emptyAppointment = { id: null, appointmentDate: '', doctorId: '', animalId: '' };
 
 function Appointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(emptyAppointment);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   const fetchAppointments = async () => {
     setLoading(true);
     try {
       const res = await api.get('/appointments');
-
-      // Pageable destekli yapı kontrolü
-      const list = Array.isArray(res.data)
-        ? res.data
-        : res.data.data?.items || res.data.data?.content || [];
-
+      const list = res.data.data ? res.data.data.content : res.data;
       setAppointments(list);
     } catch (err) {
-      setError('Failed to load appointments');
+      setSnackbar({ open: true, message: 'Failed to load appointments', severity: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchAppointments();
-  }, []);
+  useEffect(() => { fetchAppointments(); }, []);
 
   const handleDelete = async (id) => {
     try {
       await api.delete(`/appointments/${id}`);
+      setSnackbar({ open: true, message: 'Appointment deleted', severity: 'success' });
       fetchAppointments();
-    } catch {
-      setError('Failed to delete appointment');
+    } catch (err) {
+      setSnackbar({ open: true, message: 'Could not delete appointment', severity: 'error' });
     }
   };
 
@@ -65,19 +55,16 @@ function Appointments() {
     setFormData(emptyAppointment);
     setOpen(true);
   };
-
-  const handleClose = () => {
-    setFormData(emptyAppointment);
-    setOpen(false);
-  };
+  const handleClose = () => setOpen(false);
 
   const handleSave = async () => {
     try {
       await api.post('/appointments', formData);
+      setSnackbar({ open: true, message: 'Appointment saved', severity: 'success' });
       handleClose();
       fetchAppointments();
     } catch (err) {
-      setError('Failed to save appointment');
+      setSnackbar({ open: true, message: 'Could not save appointment', severity: 'error' });
     }
   };
 
@@ -90,17 +77,11 @@ function Appointments() {
       <Typography variant="h4" gutterBottom>
         Appointments
       </Typography>
-
-      <Button variant="contained" onClick={handleOpen} sx={{ mb: 2 }}>
-        Schedule Appointment
-      </Button>
-
+      <Button variant="contained" onClick={handleOpen}>Schedule Appointment</Button>
       {loading ? (
         <CircularProgress />
-      ) : error ? (
-        <Typography color="error">{error}</Typography>
       ) : (
-        <Table>
+        <Table sx={{ mt: 2 }}>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
@@ -118,9 +99,7 @@ function Appointments() {
                 <TableCell>{a.doctorId}</TableCell>
                 <TableCell>{a.animalId}</TableCell>
                 <TableCell>
-                  <Button color="error" size="small" onClick={() => handleDelete(a.id)}>
-                    Delete
-                  </Button>
+                  <Button color="error" size="small" onClick={() => handleDelete(a.id)}>Delete</Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -143,11 +122,10 @@ function Appointments() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button variant="contained" onClick={handleSave}>
-            Save
-          </Button>
+          <Button onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
+      <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
     </div>
   );
 }
