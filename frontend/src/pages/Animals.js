@@ -12,7 +12,7 @@ import {
   DialogTitle,
   DialogContent
 } from '@mui/material';
-import api from '../api';
+import { api, extractList } from '../api';
 import SnackbarAlert from '../components/SnackbarAlert';
 
 function Animals() {
@@ -27,8 +27,7 @@ function Animals() {
     try {
       const url = filter ? `/animals?name=${filter}` : '/animals';
       const res = await api.get(url);
-      const list = res.data.data ? res.data.data.content : res.data;
-      setAnimals(list);
+      setAnimals(extractList(res));
     } catch (err) {
       setSnackbar({ open: true, message: 'Failed to load animals', severity: 'error' });
     } finally {
@@ -42,7 +41,7 @@ function Animals() {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" color="primary" gutterBottom>
         Animals
       </Typography>
       <TextField label="Filter by name" value={filter} onChange={(e) => setFilter(e.target.value)} sx={{ mb: 2 }} />
@@ -51,7 +50,7 @@ function Animals() {
       ) : (
         <Table>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Species</TableCell>
@@ -71,7 +70,7 @@ function Animals() {
         </Table>
       )}
 
-      <Dialog open={Boolean(selected)} onClose={() => setSelected(null)}>
+      <Dialog open={Boolean(selected)} onClose={() => setSelected(null)} fullWidth maxWidth="sm">
         <DialogTitle>Animal Details</DialogTitle>
         <DialogContent>
           {selected && (
