@@ -77,7 +77,7 @@ public class AppointmentController {
 
     @GetMapping("/{id}/filter-by-animal")
     public ResponseEntity<List<AppointmentResponse>> getAppointmentsByAnimalAndDateRange(
-            @PathVariable("id") Long animalId,
+            @PathVariable("id"  ) Long animalId,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate startDate,
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate endDate)
     {

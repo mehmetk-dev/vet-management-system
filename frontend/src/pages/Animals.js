@@ -24,9 +24,16 @@ function Animals() {
   const fetchAnimals = async () => {
     setLoading(true);
     try {
+      // Filtreli veya filtresiz URL oluşturuluyor
       const url = filter ? `/animals?name=${filter}` : '/animals';
+
       const res = await api.get(url);
-      const list = res.data.data ? res.data.data.content : res.data;
+
+      // response yapısına göre data işleniyor
+      const list = Array.isArray(res.data)
+        ? res.data
+        : res.data.data?.items || res.data.data?.content || [];
+
       setAnimals(list);
     } catch (err) {
       setError('Failed to load animals');
@@ -44,7 +51,14 @@ function Animals() {
       <Typography variant="h4" gutterBottom>
         Animals
       </Typography>
-      <TextField label="Filter by name" value={filter} onChange={(e) => setFilter(e.target.value)} sx={{ mb: 2 }} />
+
+      <TextField
+        label="Filter by name"
+        value={filter}
+        onChange={(e) => setFilter(e.target.value)}
+        sx={{ mb: 2 }}
+      />
+
       {loading ? (
         <CircularProgress />
       ) : error ? (
@@ -61,7 +75,12 @@ function Animals() {
           </TableHead>
           <TableBody>
             {animals.map((a) => (
-              <TableRow key={a.id} hover onClick={() => setSelected(a)} style={{ cursor: 'pointer' }}>
+              <TableRow
+                key={a.id}
+                hover
+                onClick={() => setSelected(a)}
+                style={{ cursor: 'pointer' }}
+              >
                 <TableCell>{a.id}</TableCell>
                 <TableCell>{a.name}</TableCell>
                 <TableCell>{a.species}</TableCell>

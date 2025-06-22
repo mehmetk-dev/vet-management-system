@@ -16,7 +16,14 @@ import {
 } from '@mui/material';
 import api from '../api';
 
-const emptyCustomer = { id: null, name: '', phone: '', email: '', city: '', address: '' };
+const emptyCustomer = {
+  id: null,
+  name: '',
+  phone: '',
+  email: '',
+  city: '',
+  address: ''
+};
 
 function Customers() {
   const [customers, setCustomers] = useState([]);
@@ -28,8 +35,13 @@ function Customers() {
   const fetchCustomers = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/customers');
-      const list = res.data.data ? res.data.data.content : res.data;
+      const res = await api.get('/customers', {
+        params: {
+          page: 0,
+          pageSize: 1000  // burayı artırdık
+        }
+      });
+      const list = res.data?.data?.items || [];
       setCustomers(list);
     } catch (err) {
       setError('Failed to load customers');
@@ -43,8 +55,12 @@ function Customers() {
   }, []);
 
   const handleDelete = async (id) => {
-    await api.delete(`/customers/${id}`);
-    fetchCustomers();
+    try {
+      await api.delete(`/customers/${id}`);
+      fetchCustomers();
+    } catch {
+      setError('Failed to delete customer');
+    }
   };
 
   const handleOpen = (c = emptyCustomer) => {
@@ -52,7 +68,10 @@ function Customers() {
     setOpen(true);
   };
 
-  const handleClose = () => setOpen(false);
+  const handleClose = () => {
+    setEditData(emptyCustomer);
+    setOpen(false);
+  };
 
   const handleSave = async () => {
     try {
@@ -63,7 +82,7 @@ function Customers() {
       }
       handleClose();
       fetchCustomers();
-    } catch (err) {
+    } catch {
       setError('Failed to save customer');
     }
   };
@@ -77,13 +96,16 @@ function Customers() {
       <Typography variant="h4" gutterBottom>
         Customers
       </Typography>
-      <Button variant="contained" onClick={() => handleOpen()}>Add Customer</Button>
+      <Button variant="contained" onClick={() => handleOpen()} sx={{ mb: 2 }}>
+        Add Customer
+      </Button>
+
       {loading ? (
         <CircularProgress />
       ) : error ? (
         <Typography color="error">{error}</Typography>
       ) : (
-        <Table sx={{ mt: 2 }}>
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
@@ -125,7 +147,7 @@ function Customers() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button onClick={handleSave} variant="contained">Save</Button>
         </DialogActions>
       </Dialog>
     </div>

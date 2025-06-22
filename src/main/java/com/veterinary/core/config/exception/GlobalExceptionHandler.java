@@ -28,6 +28,14 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<>(apiError, apiError.getStatus());
     }
 
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<Object> handleNotFoundException(NotFoundException ex, WebRequest webRequest) {
+        ApiError apiError = new ApiError
+                (HttpStatus.BAD_REQUEST, ex.getMessage(), webRequest.getDescription(false));
+        return new ResponseEntity<>(apiError, apiError.getStatus());
+    }
+
+
     //Yanlış endpoint girilmesini handler eden metot
     @ExceptionHandler(NoHandlerFoundException.class)
     public ResponseEntity<Object> handleNotFound(NoHandlerFoundException ex,WebRequest webRequest) {

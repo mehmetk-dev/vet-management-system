@@ -16,7 +16,14 @@ import {
 } from '@mui/material';
 import api from '../api';
 
-const emptyVaccine = { id: null, name: '', code: '', protectionStartDate: '', protectionFinishDate: '', animalId: '' };
+const emptyVaccine = {
+  id: null,
+  name: '',
+  code: '',
+  protectionStartDate: '',
+  protectionFinishDate: '',
+  animalId: ''
+};
 
 function Vaccines() {
   const [vaccines, setVaccines] = useState([]);
@@ -29,7 +36,11 @@ function Vaccines() {
     setLoading(true);
     try {
       const res = await api.get('/vaccines');
-      const list = res.data.data ? res.data.data.content : res.data;
+
+      const list = Array.isArray(res.data)
+        ? res.data
+        : res.data.data?.items || res.data.data?.content || [];
+
       setVaccines(list);
     } catch (err) {
       setError('Failed to load vaccines');
@@ -38,13 +49,19 @@ function Vaccines() {
     }
   };
 
-  useEffect(() => { fetchVaccines(); }, []);
+  useEffect(() => {
+    fetchVaccines();
+  }, []);
 
   const handleOpen = () => {
     setFormData(emptyVaccine);
     setOpen(true);
   };
-  const handleClose = () => setOpen(false);
+
+  const handleClose = () => {
+    setFormData(emptyVaccine);
+    setOpen(false);
+  };
 
   const handleSave = async () => {
     try {
@@ -65,13 +82,17 @@ function Vaccines() {
       <Typography variant="h4" gutterBottom>
         Vaccines
       </Typography>
-      <Button variant="contained" onClick={handleOpen}>Add Vaccine</Button>
+
+      <Button variant="contained" onClick={handleOpen} sx={{ mb: 2 }}>
+        Add Vaccine
+      </Button>
+
       {loading ? (
         <CircularProgress />
       ) : error ? (
         <Typography color="error">{error}</Typography>
       ) : (
-        <Table sx={{ mt: 2 }}>
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
@@ -120,7 +141,9 @@ function Vaccines() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button variant="contained" onClick={handleSave}>
+            Save
+          </Button>
         </DialogActions>
       </Dialog>
     </div>

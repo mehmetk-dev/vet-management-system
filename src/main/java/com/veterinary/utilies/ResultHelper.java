@@ -16,7 +16,6 @@ public class ResultHelper {
         return new ResultData<>(true, "İşlem Başarılı","200",data);
     }
 
-
     public static Result notFoundError(String msg){
         return new Result(false, msg,"404");
     }

@@ -16,7 +16,12 @@ import {
 } from '@mui/material';
 import api from '../api';
 
-const emptyAppointment = { id: null, appointmentDate: '', doctorId: '', animalId: '' };
+const emptyAppointment = {
+  id: null,
+  appointmentDate: '',
+  doctorId: '',
+  animalId: ''
+};
 
 function Appointments() {
   const [appointments, setAppointments] = useState([]);
@@ -29,7 +34,12 @@ function Appointments() {
     setLoading(true);
     try {
       const res = await api.get('/appointments');
-      const list = res.data.data ? res.data.data.content : res.data;
+
+      // Pageable destekli yapı kontrolü
+      const list = Array.isArray(res.data)
+        ? res.data
+        : res.data.data?.items || res.data.data?.content || [];
+
       setAppointments(list);
     } catch (err) {
       setError('Failed to load appointments');
@@ -38,18 +48,28 @@ function Appointments() {
     }
   };
 
-  useEffect(() => { fetchAppointments(); }, []);
+  useEffect(() => {
+    fetchAppointments();
+  }, []);
 
   const handleDelete = async (id) => {
-    await api.delete(`/appointments/${id}`);
-    fetchAppointments();
+    try {
+      await api.delete(`/appointments/${id}`);
+      fetchAppointments();
+    } catch {
+      setError('Failed to delete appointment');
+    }
   };
 
   const handleOpen = () => {
     setFormData(emptyAppointment);
     setOpen(true);
   };
-  const handleClose = () => setOpen(false);
+
+  const handleClose = () => {
+    setFormData(emptyAppointment);
+    setOpen(false);
+  };
 
   const handleSave = async () => {
     try {
@@ -70,13 +90,17 @@ function Appointments() {
       <Typography variant="h4" gutterBottom>
         Appointments
       </Typography>
-      <Button variant="contained" onClick={handleOpen}>Schedule Appointment</Button>
+
+      <Button variant="contained" onClick={handleOpen} sx={{ mb: 2 }}>
+        Schedule Appointment
+      </Button>
+
       {loading ? (
         <CircularProgress />
       ) : error ? (
         <Typography color="error">{error}</Typography>
       ) : (
-        <Table sx={{ mt: 2 }}>
+        <Table>
           <TableHead>
             <TableRow>
               <TableCell>ID</TableCell>
@@ -94,7 +118,9 @@ function Appointments() {
                 <TableCell>{a.doctorId}</TableCell>
                 <TableCell>{a.animalId}</TableCell>
                 <TableCell>
-                  <Button color="error" size="small" onClick={() => handleDelete(a.id)}>Delete</Button>
+                  <Button color="error" size="small" onClick={() => handleDelete(a.id)}>
+                    Delete
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -117,7 +143,9 @@ function Appointments() {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button variant="contained" onClick={handleSave}>
+            Save
+          </Button>
         </DialogActions>
       </Dialog>
     </div>
