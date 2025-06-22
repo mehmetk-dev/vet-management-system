@@ -7,54 +7,54 @@ import {
   TableCell,
   TableBody,
   Button,
-  CircularProgress,
   Dialog,
   DialogTitle,
   DialogContent,
   DialogActions,
-  TextField
+  TextField,
+  CircularProgress
 } from '@mui/material';
 import api from '../api';
 import SnackbarAlert from '../components/SnackbarAlert';
 
-const emptyCustomer = { id: null, name: '', phone: '', email: '', city: '', address: '' };
+const emptyDoctor = { id: null, name: '', phone: '', email: '', specialty: '' };
 
-function Customers() {
-  const [customers, setCustomers] = useState([]);
+function Doctors() {
+  const [doctors, setDoctors] = useState([]);
   const [loading, setLoading] = useState(true);
   const [open, setOpen] = useState(false);
-  const [editData, setEditData] = useState(emptyCustomer);
+  const [editData, setEditData] = useState(emptyDoctor);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-  const fetchCustomers = async () => {
+  const fetchDoctors = async () => {
     setLoading(true);
     try {
-      const res = await api.get('/customers');
+      const res = await api.get('/doctors');
       const list = res.data.data ? res.data.data.content : res.data;
-      setCustomers(list);
+      setDoctors(list);
     } catch (err) {
-      setSnackbar({ open: true, message: 'Failed to load customers', severity: 'error' });
+      setSnackbar({ open: true, message: 'Failed to load doctors', severity: 'error' });
     } finally {
       setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchCustomers();
+    fetchDoctors();
   }, []);
 
   const handleDelete = async (id) => {
     try {
-      await api.delete(`/customers/${id}`);
-      setSnackbar({ open: true, message: 'Customer deleted', severity: 'success' });
-      fetchCustomers();
+      await api.delete(`/doctors/${id}`);
+      setSnackbar({ open: true, message: 'Doctor deleted', severity: 'success' });
+      fetchDoctors();
     } catch (err) {
-      setSnackbar({ open: true, message: 'Could not delete customer', severity: 'error' });
+      setSnackbar({ open: true, message: 'Could not delete doctor', severity: 'error' });
     }
   };
 
-  const handleOpen = (c = emptyCustomer) => {
-    setEditData(c);
+  const handleOpen = (d = emptyDoctor) => {
+    setEditData(d);
     setOpen(true);
   };
 
@@ -63,15 +63,15 @@ function Customers() {
   const handleSave = async () => {
     try {
       if (editData.id) {
-        await api.put(`/customers/${editData.id}`, editData);
+        await api.put(`/doctors/${editData.id}`, editData);
       } else {
-        await api.post('/customers', editData);
+        await api.post('/doctors', editData);
       }
-      setSnackbar({ open: true, message: 'Customer saved', severity: 'success' });
+      setSnackbar({ open: true, message: 'Doctor saved', severity: 'success' });
       handleClose();
-      fetchCustomers();
+      fetchDoctors();
     } catch (err) {
-      setSnackbar({ open: true, message: 'Could not save customer', severity: 'error' });
+      setSnackbar({ open: true, message: 'Could not save doctor', severity: 'error' });
     }
   };
 
@@ -82,9 +82,11 @@ function Customers() {
   return (
     <div>
       <Typography variant="h4" gutterBottom>
-        Customers
+        Doctors
       </Typography>
-      <Button variant="contained" onClick={() => handleOpen()}>Add Customer</Button>
+      <Button variant="contained" onClick={() => handleOpen()}>
+        Add Doctor
+      </Button>
       {loading ? (
         <CircularProgress />
       ) : (
@@ -95,23 +97,23 @@ function Customers() {
               <TableCell>Name</TableCell>
               <TableCell>Phone</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>City</TableCell>
-              <TableCell>Address</TableCell>
+              <TableCell>Specialty</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {customers.map((c) => (
-              <TableRow key={c.id}>
-                <TableCell>{c.id}</TableCell>
-                <TableCell>{c.name}</TableCell>
-                <TableCell>{c.phone}</TableCell>
-                <TableCell>{c.email}</TableCell>
-                <TableCell>{c.city}</TableCell>
-                <TableCell>{c.address}</TableCell>
+            {doctors.map((d) => (
+              <TableRow key={d.id}>
+                <TableCell>{d.id}</TableCell>
+                <TableCell>{d.name}</TableCell>
+                <TableCell>{d.phone}</TableCell>
+                <TableCell>{d.email}</TableCell>
+                <TableCell>{d.specialty}</TableCell>
                 <TableCell>
-                  <Button size="small" onClick={() => handleOpen(c)}>Edit</Button>
-                  <Button size="small" color="error" onClick={() => handleDelete(c.id)}>Delete</Button>
+                  <Button size="small" onClick={() => handleOpen(d)}>Edit</Button>
+                  <Button size="small" color="error" onClick={() => handleDelete(d.id)}>
+                    Delete
+                  </Button>
                 </TableCell>
               </TableRow>
             ))}
@@ -120,13 +122,12 @@ function Customers() {
       )}
 
       <Dialog open={open} onClose={handleClose} fullWidth>
-        <DialogTitle>{editData.id ? 'Edit Customer' : 'Add Customer'}</DialogTitle>
+        <DialogTitle>{editData.id ? 'Edit Doctor' : 'Add Doctor'}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <TextField label="Name" value={editData.name} onChange={handleChange('name')} />
           <TextField label="Phone" value={editData.phone} onChange={handleChange('phone')} />
           <TextField label="Email" value={editData.email} onChange={handleChange('email')} />
-          <TextField label="City" value={editData.city} onChange={handleChange('city')} />
-          <TextField label="Address" value={editData.address} onChange={handleChange('address')} />
+          <TextField label="Specialty" value={editData.specialty} onChange={handleChange('specialty')} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handleClose}>Cancel</Button>
@@ -138,4 +139,4 @@ function Customers() {
   );
 }
 
-export default Customers;
+export default Doctors;

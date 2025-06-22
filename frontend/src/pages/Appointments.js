@@ -15,15 +15,16 @@ import {
   CircularProgress
 } from '@mui/material';
 import api from '../api';
+import SnackbarAlert from '../components/SnackbarAlert';
 
 const emptyAppointment = { id: null, appointmentDate: '', doctorId: '', animalId: '' };
 
 function Appointments() {
   const [appointments, setAppointments] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(emptyAppointment);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   const fetchAppointments = async () => {
     setLoading(true);
@@ -32,7 +33,7 @@ function Appointments() {
       const list = res.data.data ? res.data.data.content : res.data;
       setAppointments(list);
     } catch (err) {
-      setError('Failed to load appointments');
+      setSnackbar({ open: true, message: 'Failed to load appointments', severity: 'error' });
     } finally {
       setLoading(false);
     }
@@ -41,8 +42,13 @@ function Appointments() {
   useEffect(() => { fetchAppointments(); }, []);
 
   const handleDelete = async (id) => {
-    await api.delete(`/appointments/${id}`);
-    fetchAppointments();
+    try {
+      await api.delete(`/appointments/${id}`);
+      setSnackbar({ open: true, message: 'Appointment deleted', severity: 'success' });
+      fetchAppointments();
+    } catch (err) {
+      setSnackbar({ open: true, message: 'Could not delete appointment', severity: 'error' });
+    }
   };
 
   const handleOpen = () => {
@@ -54,10 +60,11 @@ function Appointments() {
   const handleSave = async () => {
     try {
       await api.post('/appointments', formData);
+      setSnackbar({ open: true, message: 'Appointment saved', severity: 'success' });
       handleClose();
       fetchAppointments();
     } catch (err) {
-      setError('Failed to save appointment');
+      setSnackbar({ open: true, message: 'Could not save appointment', severity: 'error' });
     }
   };
 
@@ -73,8 +80,6 @@ function Appointments() {
       <Button variant="contained" onClick={handleOpen}>Schedule Appointment</Button>
       {loading ? (
         <CircularProgress />
-      ) : error ? (
-        <Typography color="error">{error}</Typography>
       ) : (
         <Table sx={{ mt: 2 }}>
           <TableHead>
@@ -120,6 +125,7 @@ function Appointments() {
           <Button onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
+      <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
     </div>
   );
 }
