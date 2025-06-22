@@ -13,7 +13,7 @@ npm install
 2. Start the development server:
 
 ```bash
-npm start
+npm run dev
 ```
 
 The application will be available at `http://localhost:3000` and the API requests are made to `http://localhost:8080`.

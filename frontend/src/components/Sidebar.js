@@ -29,7 +29,15 @@ const Sidebar = () => {
   return (
     <Drawer
       variant="permanent"
-      sx={{ width: 200, [`& .MuiDrawer-paper`]: { width: 200, boxSizing: 'border-box' } }}
+      sx={{
+        width: 200,
+        [`& .MuiDrawer-paper`]: {
+          width: 200,
+          boxSizing: 'border-box',
+          bgcolor: 'primary.main',
+          color: '#fff'
+        }
+      }}
     >
       <Toolbar />
       <List>
@@ -40,9 +48,17 @@ const Sidebar = () => {
             component={Link}
             to={item.path}
             selected={location.pathname === item.path}
-            sx={{ '&:hover': { bgcolor: 'action.hover' } }}
+            sx={{
+              '&.Mui-selected': {
+                bgcolor: 'primary.dark'
+              },
+              '&.Mui-selected:hover': {
+                bgcolor: 'primary.dark'
+              },
+              '&:hover': { bgcolor: 'primary.light' }
+            }}
           >
-            <ListItemIcon>{item.icon}</ListItemIcon>
+            <ListItemIcon sx={{ color: '#fff' }}>{item.icon}</ListItemIcon>
             <ListItemText primary={item.text} />
           </ListItem>
         ))}
