@@ -15,15 +15,16 @@ import {
   CircularProgress
 } from '@mui/material';
 import api from '../api';
+import SnackbarAlert from '../components/SnackbarAlert';
 
 const emptyVaccine = { id: null, name: '', code: '', protectionStartDate: '', protectionFinishDate: '', animalId: '' };
 
 function Vaccines() {
   const [vaccines, setVaccines] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
   const [formData, setFormData] = useState(emptyVaccine);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
   const fetchVaccines = async () => {
     setLoading(true);
@@ -32,7 +33,7 @@ function Vaccines() {
       const list = res.data.data ? res.data.data.content : res.data;
       setVaccines(list);
     } catch (err) {
-      setError('Failed to load vaccines');
+      setSnackbar({ open: true, message: 'Failed to load vaccines', severity: 'error' });
     } finally {
       setLoading(false);
     }
@@ -49,10 +50,11 @@ function Vaccines() {
   const handleSave = async () => {
     try {
       await api.post('/vaccines', formData);
+      setSnackbar({ open: true, message: 'Vaccine saved', severity: 'success' });
       handleClose();
       fetchVaccines();
     } catch (err) {
-      setError('Failed to save vaccine');
+      setSnackbar({ open: true, message: 'Could not save vaccine', severity: 'error' });
     }
   };
 
@@ -68,8 +70,6 @@ function Vaccines() {
       <Button variant="contained" onClick={handleOpen}>Add Vaccine</Button>
       {loading ? (
         <CircularProgress />
-      ) : error ? (
-        <Typography color="error">{error}</Typography>
       ) : (
         <Table sx={{ mt: 2 }}>
           <TableHead>
@@ -123,6 +123,7 @@ function Vaccines() {
           <Button onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
+      <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
     </div>
   );
 }

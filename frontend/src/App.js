@@ -7,6 +7,7 @@ import Customers from './pages/Customers';
 import Animals from './pages/Animals';
 import Appointments from './pages/Appointments';
 import Vaccines from './pages/Vaccines';
+import Doctors from './pages/Doctors';
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path="/animals" element={<Animals />} />
             <Route path="/appointments" element={<Appointments />} />
             <Route path="/vaccines" element={<Vaccines />} />
+            <Route path="/doctors" element={<Doctors />} />
           </Routes>
         </Box>
       </Box>
