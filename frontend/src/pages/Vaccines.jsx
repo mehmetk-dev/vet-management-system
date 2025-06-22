@@ -14,7 +14,7 @@ import {
   TextField,
   CircularProgress
 } from '@mui/material';
-import api from '../api';
+import { api, extractList } from '../api';
 import SnackbarAlert from '../components/SnackbarAlert';
 
 const emptyVaccine = { id: null, name: '', code: '', protectionStartDate: '', protectionFinishDate: '', animalId: '' };
@@ -30,8 +30,7 @@ function Vaccines() {
     setLoading(true);
     try {
       const res = await api.get('/vaccines');
-      const list = res.data.data ? res.data.data.content : res.data;
-      setVaccines(list);
+      setVaccines(extractList(res));
     } catch (err) {
       setSnackbar({ open: true, message: 'Failed to load vaccines', severity: 'error' });
     } finally {
@@ -64,16 +63,16 @@ function Vaccines() {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" color="primary" gutterBottom>
         Vaccines
       </Typography>
-      <Button variant="contained" onClick={handleOpen}>Add Vaccine</Button>
+      <Button variant="contained" color="primary" onClick={handleOpen}>Add Vaccine</Button>
       {loading ? (
         <CircularProgress />
       ) : (
         <Table sx={{ mt: 2 }}>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Code</TableCell>
@@ -97,7 +96,7 @@ function Vaccines() {
         </Table>
       )}
 
-      <Dialog open={open} onClose={handleClose} fullWidth>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>Add Vaccine</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <TextField label="Name" value={formData.name} onChange={handleChange('name')} />
@@ -119,8 +118,8 @@ function Vaccines() {
           <TextField label="Animal ID" value={formData.animalId} onChange={handleChange('animalId')} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+          <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
       <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />

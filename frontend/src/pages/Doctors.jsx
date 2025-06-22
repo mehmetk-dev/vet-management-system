@@ -14,10 +14,10 @@ import {
   TextField,
   CircularProgress
 } from '@mui/material';
-import api from '../api';
+import { api, extractList } from '../api';
 import SnackbarAlert from '../components/SnackbarAlert';
 
-const emptyDoctor = { id: null, name: '', phone: '', email: '', specialty: '' };
+const emptyDoctor = { id: null, name: '', phone: '', email: '', profession: '' };
 
 function Doctors() {
   const [doctors, setDoctors] = useState([]);
@@ -30,8 +30,7 @@ function Doctors() {
     setLoading(true);
     try {
       const res = await api.get('/doctors');
-      const list = res.data.data ? res.data.data.content : res.data;
-      setDoctors(list);
+      setDoctors(extractList(res));
     } catch (err) {
       setSnackbar({ open: true, message: 'Failed to load doctors', severity: 'error' });
     } finally {
@@ -61,6 +60,10 @@ function Doctors() {
   const handleClose = () => setOpen(false);
 
   const handleSave = async () => {
+    if (!editData.name || !editData.email) {
+      setSnackbar({ open: true, message: 'Name and email are required', severity: 'error' });
+      return;
+    }
     try {
       if (editData.id) {
         await api.put(`/doctors/${editData.id}`, editData);
@@ -81,10 +84,10 @@ function Doctors() {
 
   return (
     <div>
-      <Typography variant="h4" gutterBottom>
+      <Typography variant="h4" color="primary" gutterBottom>
         Doctors
       </Typography>
-      <Button variant="contained" onClick={() => handleOpen()}>
+      <Button variant="contained" color="primary" onClick={() => handleOpen()}>
         Add Doctor
       </Button>
       {loading ? (
@@ -92,12 +95,12 @@ function Doctors() {
       ) : (
         <Table sx={{ mt: 2 }}>
           <TableHead>
-            <TableRow>
+            <TableRow sx={{ backgroundColor: '#f5f5f5' }}>
               <TableCell>ID</TableCell>
               <TableCell>Name</TableCell>
               <TableCell>Phone</TableCell>
               <TableCell>Email</TableCell>
-              <TableCell>Specialty</TableCell>
+              <TableCell>Profession</TableCell>
               <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
@@ -108,10 +111,12 @@ function Doctors() {
                 <TableCell>{d.name}</TableCell>
                 <TableCell>{d.phone}</TableCell>
                 <TableCell>{d.email}</TableCell>
-                <TableCell>{d.specialty}</TableCell>
+                <TableCell>{d.profession}</TableCell>
                 <TableCell>
-                  <Button size="small" onClick={() => handleOpen(d)}>Edit</Button>
-                  <Button size="small" color="error" onClick={() => handleDelete(d.id)}>
+                  <Button variant="contained" size="small" color="secondary" onClick={() => handleOpen(d)}>
+                    Edit
+                  </Button>
+                  <Button variant="contained" size="small" color="error" onClick={() => handleDelete(d.id)} sx={{ ml: 1 }}>
                     Delete
                   </Button>
                 </TableCell>
@@ -121,17 +126,17 @@ function Doctors() {
         </Table>
       )}
 
-      <Dialog open={open} onClose={handleClose} fullWidth>
+      <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
         <DialogTitle>{editData.id ? 'Edit Doctor' : 'Add Doctor'}</DialogTitle>
         <DialogContent sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 1 }}>
           <TextField label="Name" value={editData.name} onChange={handleChange('name')} />
           <TextField label="Phone" value={editData.phone} onChange={handleChange('phone')} />
           <TextField label="Email" value={editData.email} onChange={handleChange('email')} />
-          <TextField label="Specialty" value={editData.specialty} onChange={handleChange('specialty')} />
+          <TextField label="Profession" value={editData.profession} onChange={handleChange('profession')} />
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose}>Cancel</Button>
-          <Button onClick={handleSave}>Save</Button>
+          <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+          <Button variant="contained" color="primary" onClick={handleSave}>Save</Button>
         </DialogActions>
       </Dialog>
       <SnackbarAlert snackbar={snackbar} setSnackbar={setSnackbar} />
