@@ -24,6 +24,42 @@ Veteriner klinikleri için geliştirilen bu sistem, müşteri, hayvan, doktor, r
 - Aşı (Vaccine) geçmişi takibi
 - Uygun günlerin (Available Dates) yönetimi
 
+## 🔐 Kimlik Doğrulama (Authentication)
+
+Bu projeye JWT tabanlı kimlik doğrulama eklenmiştir. Kullanıcılar giriş yaptıktan sonra kendilerine bir **access token** ve **refresh token** verilir. Tüm korumalı API uç noktalarına erişim için geçerli bir access token gereklidir.
+
+---
+
+### Uç Noktalar
+
+- `POST /register` – Yeni kullanıcı kaydı yapar  
+- `POST /authenticate` – Kullanıcı adı ve şifre ile giriş yapar, access ve refresh token döner  
+- `POST /refresh-token` – Geçerli refresh token ile yeni access token alır
+
+---
+
+### Kullanım Akışı
+
+1. **Kayıt:**  
+   Yeni kullanıcı oluşturmak için `/register` endpoint’i kullanılır.
+
+2. **Giriş:**  
+   `/authenticate` endpoint’i üzerinden giriş yapıldığında access ve refresh token döner.
+
+3. **Token ile Erişim:**  
+   Korunan tüm endpoint’lere erişmek için `Authorization: Bearer <access_token>` header’ı kullanılır.
+
+4. **Token Yenileme:**  
+   Access token süresi dolduğunda, `refresh-token` endpoint’i ile yeni bir access token alınabilir.
+
+---
+
+### Güvenlik Notları
+
+- `/register`, `/authenticate` ve `/refresh-token` uç noktaları dışındaki tüm uç noktalar JWT ile korunmaktadır.
+- `JwtAuthenticationFilter`, gelen isteklerdeki token’ları doğrular.
+- Session yönetimi stateless’tir.
+
 ---
 
 # Proje Kurulumu
