@@ -24,7 +24,7 @@ Veteriner klinikleri için geliştirilen bu sistem, müşteri, hayvan, doktor, r
 - Aşı (Vaccine) geçmişi takibi
 - Uygun günlerin (Available Dates) yönetimi
 
-## 🔐 Kimlik Doğrulama (Authentication)
+## Kimlik Doğrulama (Authentication)
 
 Bu projeye JWT tabanlı kimlik doğrulama eklenmiştir. Kullanıcılar giriş yaptıktan sonra kendilerine bir **access token** ve **refresh token** verilir. Tüm korumalı API uç noktalarına erişim için geçerli bir access token gereklidir.
 
@@ -54,21 +54,21 @@ Bu projeye JWT tabanlı kimlik doğrulama eklenmiştir. Kullanıcılar giriş ya
 
 ---
 
-## 📄 API Dokümantasyonu – Swagger UI
+## API Dokümantasyonu – Swagger UI
 
 Bu proje, REST API uç noktalarının test edilmesi ve belgelenmesi amacıyla [Swagger UI](https://swagger.io/tools/swagger-ui/) arayüzü ile entegre edilmiştir.
 
 ---
 
-### 🔗 Erişim
+### Erişim
 
 Uygulama çalıştıktan sonra Swagger arayüzüne aşağıdaki URL üzerinden erişebilirsiniz:
 
-➡️ **http://localhost:8080/swagger-ui/index.html**
+ **http://localhost:8080/swagger-ui/index.html**
 
 ---
 
-### 🛡️ JWT Authentication
+### JWT Authentication
 
 Korunan endpoint’lere erişebilmek için JWT token girmeniz gerekmektedir. Swagger üzerinden bunu yapmak için:
 
