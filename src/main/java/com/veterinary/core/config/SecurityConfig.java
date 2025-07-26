@@ -19,6 +19,11 @@ public class SecurityConfig {
     public static final String AUTHENTICATE = "/authenticate";
     public static final String REGISTER = "/register";
     public static final String REFRESH_TOKEN = "/refresh-token";
+    public static final String[] SWAGGER_URL = {
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/swagger-ui.html"
+    };
 
     private final JwtAuthenticationFilter filter;
     private final AuthenticationProvider provider;
@@ -37,6 +42,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         request ->
                                 request.requestMatchers(AUTHENTICATE, REFRESH_TOKEN, REGISTER)
+                                        .permitAll()
+                                        .requestMatchers(SWAGGER_URL)
                                         .permitAll()
                                         .anyRequest()
                                         .authenticated())

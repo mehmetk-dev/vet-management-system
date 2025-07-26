@@ -34,6 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         header = request.getHeader("Authorization");
 
+        String path = request.getRequestURI();
+
         if (header == null) {
             filterChain.doFilter(request, response);
             return;
