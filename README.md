@@ -30,14 +30,6 @@ Bu projeye JWT tabanlı kimlik doğrulama eklenmiştir. Kullanıcılar giriş ya
 
 ---
 
-### Uç Noktalar
-
-- `POST /register` – Yeni kullanıcı kaydı yapar  
-- `POST /authenticate` – Kullanıcı adı ve şifre ile giriş yapar, access ve refresh token döner  
-- `POST /refresh-token` – Geçerli refresh token ile yeni access token alır
-
----
-
 ### Kullanım Akışı
 
 1. **Kayıt:**  
@@ -59,6 +51,30 @@ Bu projeye JWT tabanlı kimlik doğrulama eklenmiştir. Kullanıcılar giriş ya
 - `/register`, `/authenticate` ve `/refresh-token` uç noktaları dışındaki tüm uç noktalar JWT ile korunmaktadır.
 - `JwtAuthenticationFilter`, gelen isteklerdeki token’ları doğrular.
 - Session yönetimi stateless’tir.
+
+---
+
+## 📄 API Dokümantasyonu – Swagger UI
+
+Bu proje, REST API uç noktalarının test edilmesi ve belgelenmesi amacıyla [Swagger UI](https://swagger.io/tools/swagger-ui/) arayüzü ile entegre edilmiştir.
+
+---
+
+### 🔗 Erişim
+
+Uygulama çalıştıktan sonra Swagger arayüzüne aşağıdaki URL üzerinden erişebilirsiniz:
+
+➡️ **http://localhost:8080/swagger-ui/index.html**
+
+---
+
+### 🛡️ JWT Authentication
+
+Korunan endpoint’lere erişebilmek için JWT token girmeniz gerekmektedir. Swagger üzerinden bunu yapmak için:
+
+- Sisteme **kayıt olmak için** `/register` endpoint'ini kullanın.
+- Ardından **giriş yapmak için** `/authenticate` endpoint’ine kullanıcı bilgilerinizi gönderin ve token alın.
+- Token süresi dolduğunda, **yenilemek için** `/refresh-token` endpoint’ini kullanabilirsiniz.
 
 ---
 
@@ -163,6 +179,12 @@ psql -U postgres -d VeterinaryBase -f ./veterinary_database.sql
 ---
 
 ## API Modülleri
+
+### JWT Token
+
+- `POST /register` – Yeni kullanıcı kaydı yapar  
+- `POST /authenticate` – Kullanıcı adı ve şifre ile giriş yapar, access ve refresh token döner  
+- `POST /refresh-token` – Geçerli refresh token ile yeni access token alır
 
 ### Customer
 
